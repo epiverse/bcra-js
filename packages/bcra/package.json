@@ -1,0 +1,63 @@
+{
+  "name": "bcra",
+  "version": "1.0.0",
+  "description": "JavaScript implementation of NCI's Breast Cancer Risk Assessment Tool (BCRAT; Gail Model)",
+  "type": "module",
+  "main": "./dist/bcra.umd.js",
+  "module": "./dist/bcra.es.js",
+  "types": "./types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/bcra.es.js",
+      "require": "./dist/bcra.umd.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "types",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "breast-cancer",
+    "risk-assessment",
+    "bcrat",
+    "gail-model",
+    "medical",
+    "healthcare",
+    "epidemiology",
+    "oncology",
+    "cancer-screening",
+    "risk-calculator"
+  ],
+  "author": "Jeya Balaji Balasubramanian",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/epiverse/bcra-js",
+    "directory": "packages/bcra"
+  },
+  "bugs": {
+    "url": "https://github.com/epiverse/bcra-js/issues"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .js",
+    "format": "prettier --write \"src/**/*.js\"",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "vite": "^7.2.2",
+    "vitest": "^4.0.8",
+    "@vitest/coverage-v8": "^4.0.8"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
