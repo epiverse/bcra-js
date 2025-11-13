@@ -6,15 +6,6 @@ JavaScript implementation of the National Cancer Institute's Breast Cancer Risk 
 
 BCRA is a client-side JavaScript library that calculates the absolute risk of invasive breast cancer based on individual risk factors. This implementation maintains full computational fidelity with the original R package while providing a lightweight, privacy-preserving solution that runs entirely in the browser.
 
-## Features
-
-- 🔒 **Privacy-First**: All calculations performed client-side - no data leaves the browser
-- 🎯 **Accurate**: Maintains computational fidelity with NCI's original R implementation
-- 🚀 **Modern**: ES6+ JavaScript with full TypeScript definitions
-- 📦 **Lightweight**: Zero dependencies, small bundle size
-- 🌐 **Universal**: Works in browsers and Node.js
-- 🧪 **Tested**: Comprehensive test suite with cross-validation against R package
-
 ## Installation
 
 ```bash
@@ -67,7 +58,7 @@ Calculates breast cancer risk for one individual.
   - `id` (number): Individual's unique ID (positive integer: 1, 2, 3, ...)
   - `initialAge` (number): Initial age (range: 20-89)
   - `projectionEndAge` (number): Risk projection end age, after starting at `initialAge` (range: `initialAge`-90, such that `initialAge` < `projectionEndAge`)
-  - `race` (number): Race code (range: 1-11; see details)
+  - `race` (number): Race code (range: 1-11; see `Race Codes` subsection below)
   - `numBreastBiopsies` (number): Number of breast biopsies (0, 1, 2+, or 99 for unknown)
   - `ageAtMenarche` (number): Age at first menstrual period (7-17, or 99 for unknown, such that `ageAtMenarche` ≤ `initialAge`)
   - `ageAtFirstBirth` (number): Age at first live birth (10-60, 98 for nulliparous, 99 for unknown, such that `ageAtMenarche` ≤ `ageAtFirstBirth` ≤ `initialAge`)
@@ -79,7 +70,7 @@ Calculates breast cancer risk for one individual.
 
 **Returns:** Object with risk calculations using the Breast Cancer Risk Assessment Tool (BCRAT; Gail model)
 
-### Race/Ethnicity Codes
+### Race Codes
 
 - 1: Non-Hispanic White
 - 2: African-American
@@ -118,30 +109,16 @@ The Gail Model is a breast cancer risk assessment tool developed by Dr. Mitchell
 
 **Key Publications:**
 
-- Gail MH, Brinton LA, Byar DP, et al. Projecting individualized probabilities of developing breast cancer for white females who are being examined annually. J Natl Cancer Inst. 1989;81(24):1879-1886.
-- Costantino JP, Gail MH, Pee D, et al. Validation studies for models projecting the risk of invasive and total breast cancer incidence. J Natl Cancer Inst. 1999;91(18):1541-1548.
+- [Gail MH, Brinton LA, Byar DP, et al. Projecting individualized probabilities of developing breast cancer for white females who are being examined annually. J Natl Cancer Inst. 1989;81(24):1879-1886.](https://pubmed.ncbi.nlm.nih.gov/2593165/)
+- [Costantino JP, Gail MH, Pee D, et al. Validation studies for models projecting the risk of invasive and total breast cancer incidence. J Natl Cancer Inst. 1999;91(18):1541-1548.](https://pubmed.ncbi.nlm.nih.gov/10491430/)
 
 ## License
 
 MIT License - see LICENSE file for details
 
-## Citation
-
-If you use this library in research, please cite:
-
-```
-BCRA JavaScript Library (2025)
-JavaScript implementation of NCI's Breast Cancer Risk Assessment Tool
-https://github.com/epiverse/bcra-js
-```
-
 ## Disclaimer
 
 This tool is for research and educational purposes. It should not be used as a substitute for professional medical advice, diagnosis, or treatment. Always consult qualified healthcare providers for medical decisions.
-
-## Contributing
-
-Contributions welcome! Please see CONTRIBUTING.md for guidelines.
 
 ## Status
 
