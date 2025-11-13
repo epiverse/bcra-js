@@ -1,5 +1,5 @@
 /**
- * BCRA-R - Breast Cancer Risk Assessment Tool
+ * BCRAT - Breast Cancer Risk Assessment Tool
  * JavaScript implementation of NCI's BCRAT (Gail Model)
  *
  * @module bcra
@@ -20,7 +20,7 @@
 // Export version
 export const VERSION = '1.0.0';
 
-// Placeholder export for Phase 1
+// Placeholder export
 export default {
   VERSION,
 };

@@ -3,23 +3,23 @@
  */
 
 /**
- * @typedef {Object} PatientData
- * @property {number} id - Patient identifier
- * @property {number} currentAge - Current age (T1), range: 20-90
- * @property {number} projectionAge - Projection age (T2), range: T1-90
- * @property {number} race - Race code (1-11)
- * @property {number} numberOfBiopsies - Number of breast biopsies (0, 1, 2+, or 99 for unknown)
- * @property {number} ageAtMenarche - Age at first menstrual period (7-17, or 99 for unknown)
- * @property {number} ageAtFirstBirth - Age at first live birth (10-60, 98 for nulliparous, 99 for unknown)
- * @property {number} firstDegreeRelatives - Number of first-degree relatives with breast cancer (0-10, or 99 for unknown)
- * @property {number} hyperplasia - Atypical hyperplasia indicator (0=no, 1=yes, 99=unknown/not applicable)
+ * @typedef {Object} RiskFactorProfile
+ * @property {number} id - Individual's unique ID (positive integer: 1, 2, 3, ...)
+ * @property {number} initialAge - Initial age (range: 20-89)
+ * @property {number} projectionEndAge - Risk projection end age, after starting at `initialAge` (range: `initialAge`-90, such that `initialAge` < `projectionEndAge`)
+ * @property {number} race - Race code (range: 1-11; see details)
+ * @property {number} numBreastBiopsies - Number of breast biopsies (0, 1, 2+, or 99 for unknown)
+ * @property {number} ageAtMenarche - Age at first menstrual period (7-17, or 99 for unknown, such that `ageAtMenarche` ≤ `initialAge`)
+ * @property {number} ageAtFirstBirth - Age at first live birth (10-60, 98 for nulliparous, 99 for unknown, such that `ageAtMenarche` ≤ `ageAtFirstBirth` ≤ `initialAge`)
+ * @property {number} numRelativesWithBrCa - Number of first-degree relatives with breast cancer (0-10, or 99 for unknown)
+ * @property {number} atypicalHyperplasia - Atypical hyperplasia indicator (0=no, 1=yes, 99=unknown/not applicable)
  */
 
 /**
  * @typedef {Object} RiskResult
  * @property {number} absoluteRisk - Absolute risk percentage
  * @property {number} relativeRiskUnder50 - Relative risk for age < 50
- * @property {number} relativeRiskOver50 - Relative risk for age >= 50
+ * @property {number} relativeRiskAtOrAbove50 - Relative risk for age ≥ 50
  * @property {number|null} averageRisk - Average risk (if calculated)
  * @property {string} raceEthnicity - Race/ethnicity label
  * @property {Object|null} error - Error object if calculation failed

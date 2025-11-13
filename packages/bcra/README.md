@@ -34,49 +34,50 @@ Or use via CDN:
 ```javascript
 import { calculateRisk } from 'bcra';
 
-const patientData = {
+const riskFactorProfile = {
   id: 1,
-  currentAge: 40,
-  projectionAge: 50,
+  initialAge: 40,
+  projectionEndAge: 50,
   race: 1, // Non-Hispanic White
-  numberOfBiopsies: 1,
+  numBreastBiopsies: 1,
   ageAtMenarche: 12,
   ageAtFirstBirth: 25,
-  firstDegreeRelatives: 1,
-  hyperplasia: 0,
+  numRelativesWithBrCa: 1,
+  atypicalHyperplasia: 0,
 };
 
-const result = calculateRisk(patientData);
+const result = calculateRisk(riskFactorProfile);
 
 console.log(`Absolute Risk: ${result.absoluteRisk.toFixed(2)}%`);
 console.log(
   `Relative Risk (age <50): ${result.relativeRiskUnder50.toFixed(2)}`
 );
-console.log(`Relative Risk (age ≥50): ${result.relativeRiskOver50.toFixed(2)}`);
+console.log(`Relative Risk (age ≥50): ${result.relativeRiskAtOrAbove50.toFixed(2)}`);
 ```
 
 ## API Documentation
 
-### `calculateRisk(patientData, options)`
+### `calculateRisk(riskFactorProfile, options)`
 
-Calculates breast cancer risk for a single patient.
+Calculates breast cancer risk for one individual.
 
 **Parameters:**
 
-- `patientData` (Object): Patient risk factor data
-  - `currentAge` (number): Current age (20-89)
-  - `projectionAge` (number): Future age for risk projection (currentAge to 90)
-  - `race` (number): Race/ethnicity code (1-11)
-  - `numberOfBiopsies` (number): Number of breast biopsies (0, 1, 2+, or 99 for unknown)
-  - `ageAtMenarche` (number): Age at first menstrual period (7-17, or 99 for unknown)
-  - `ageAtFirstBirth` (number): Age at first live birth (10-60, 98 for nulliparous, 99 for unknown)
-  - `firstDegreeRelatives` (number): Number of first-degree relatives with breast cancer (0-10, or 99 for unknown)
-  - `hyperplasia` (number): Atypical hyperplasia (0=no, 1=yes, 99=unknown/not applicable)
+- `riskFactorProfile` (Object): Risk factor profile of an individual
+  - `id` (number): Individual's unique ID (positive integer: 1, 2, 3, ...)
+  - `initialAge` (number): Initial age (range: 20-89)
+  - `projectionEndAge` (number): Risk projection end age, after starting at `initialAge` (range: `initialAge`-90, such that `initialAge` < `projectionEndAge`)
+  - `race` (number): Race code (range: 1-11; see details)
+  - `numBreastBiopsies` (number): Number of breast biopsies (0, 1, 2+, or 99 for unknown)
+  - `ageAtMenarche` (number): Age at first menstrual period (7-17, or 99 for unknown, such that `ageAtMenarche` ≤ `initialAge`)
+  - `ageAtFirstBirth` (number): Age at first live birth (10-60, 98 for nulliparous, 99 for unknown, such that `ageAtMenarche` ≤ `ageAtFirstBirth` ≤ `initialAge`)
+  - `numRelativesWithBrCa` (number): Number of first-degree relatives with breast cancer (0-10, or 99 for unknown)
+  - `atypicalHyperplasia` (number): Atypical hyperplasia (0=no, 1=yes, 99=unknown/not applicable)
 - `options` (Object, optional): Calculation options
   - `rawInput` (boolean): Whether input is in raw format (default: true)
   - `calculateAverage` (boolean): Calculate average risk for comparison (default: false)
 
-**Returns:** Object with risk calculations
+**Returns:** Object with risk calculations using the Breast Cancer Risk Assessment Tool (BCRAT; Gail model)
 
 ### Race/Ethnicity Codes
 

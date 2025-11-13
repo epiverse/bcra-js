@@ -4,11 +4,11 @@
  */
 
 /**
- * Validates patient data structure
- * @param {Object} data - Data to validate
+ * Validates risk factor profile data structure
+ * @param {Object} profile - Profile data to validate
  * @returns {Object} Validation result
  */
-export function validatePatientDataStructure(data) {
+export function validateRiskFactorProfileDataStructure(profile) {
   // To be implemented in Phase 4
   return {
     valid: true,
@@ -17,11 +17,11 @@ export function validatePatientDataStructure(data) {
 }
 
 /**
- * Sanitizes input data
- * @param {Object} data - Data to sanitize
+ * Sanitizes input profile
+ * @param {Object} profile - Profile data to sanitize
  * @returns {Object} Sanitized data
  */
-export function sanitizePatientData(data) {
+export function sanitizeRiskFactorProfile(profile) {
   // To be implemented in Phase 4
-  return data;
+  return profile;
 }
