@@ -261,7 +261,6 @@ Implement the core data structures and port constants from the R package:
 5. Port attributable-risk.js - 1-AR values by race and age threshold
 6. Create constants index with all exports
 
-**Estimated Duration:** 2-3 hours
 
 **Dependencies:** Access to R package `BCRA-R/data/` and `BCRA-R/R/` directories
 
@@ -275,15 +274,15 @@ Implement the core data structures and port constants from the R package:
 ```javascript
 /**
  * @typedef {Object} RiskFactorProfile
- * @property {number} id - Individual's unique ID (positive integer: 1, 2, 3, ...)
- * @property {number} initialAge - Initial age (range: 20-89)
- * @property {number} projectionEndAge - Risk projection end age, after starting at `initialAge` (range: `initialAge`-90, such that `initialAge` < `projectionEndAge`)
- * @property {number} race - Race code (range: 1-11; see details)
- * @property {number} numBreastBiopsies - Number of breast biopsies (0, 1, 2+, or 99 for unknown)
- * @property {number} ageAtMenarche - Age at first menstrual period (7-17, or 99 for unknown)
- * @property {number} ageAtFirstBirth - Age at first live birth (10-60, 98 for nulliparous, 99 for unknown)
- * @property {number} numRelativesWithBrCa - Number of first-degree relatives with breast cancer (0-10, or 99 for unknown)
- * @property {number} atypicalHyperplasia - Atypical hyperplasia indicator (0=no, 1=yes, 99=unknown/not applicable)
+ * @property {number} id - Individual's unique ID. Positive integer: 1, 2, 3,... .
+ * @property {number} initialAge - Initial age. Real number in [20, 90).
+ * @property {number} projectionEndAge - Risk projection end age, starting at `initialAge`. Real number in (20, 90], such that `initialAge` < `projectionEndAge`.
+ * @property {number} race - Race. Integer in [1, 11]. See "Race codes" for details.
+ * @property {number} numBreastBiopsies - Number of breast biopsies. Integer: 0, 1, 2,..., or 99 (unknown).
+ * @property {number} ageAtMenarche - Age at first menstrual period. Number such that `ageAtMenarche` ≤ `initialAge`, or 99 (unknown)
+ * @property {number} ageAtFirstBirth - Age at first live birth. Number such that `ageAtMenarche` ≤ `ageAtFirstBirth` ≤ `initialAge`, 98 (nulliparous), or 99 (unknown).
+ * @property {number} numRelativesWithBrCa - Number of first-degree relatives with breast cancer. Integer: 0, 1, 2,..., or 99 (unknown).
+ * @property {number} atypicalHyperplasia - Atypical hyperplasia indicator. 0 (no), 1 (yes), or 99 (unknown/not applicable).
  */
 
 /**
@@ -305,7 +304,7 @@ Implement the core data structures and port constants from the R package:
  */
 
 /**
- * Race/ethnicity codes
+ * Race codes
  * @enum {number}
  */
 export const RaceCode = {

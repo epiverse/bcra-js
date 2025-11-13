@@ -55,15 +55,15 @@ Calculates breast cancer risk for one individual.
 **Parameters:**
 
 - `riskFactorProfile` (Object): Risk factor profile of an individual
-  - `id` (number): Individual's unique ID (positive integer: 1, 2, 3, ...)
-  - `initialAge` (number): Initial age (range: 20-89)
-  - `projectionEndAge` (number): Risk projection end age, after starting at `initialAge` (range: `initialAge`-90, such that `initialAge` < `projectionEndAge`)
-  - `race` (number): Race code (range: 1-11; see `Race Codes` subsection below)
-  - `numBreastBiopsies` (number): Number of breast biopsies (0, 1, 2+, or 99 for unknown)
-  - `ageAtMenarche` (number): Age at first menstrual period (7-17, or 99 for unknown, such that `ageAtMenarche` ≤ `initialAge`)
-  - `ageAtFirstBirth` (number): Age at first live birth (10-60, 98 for nulliparous, 99 for unknown, such that `ageAtMenarche` ≤ `ageAtFirstBirth` ≤ `initialAge`)
-  - `numRelativesWithBrCa` (number): Number of first-degree relatives with breast cancer (0-10, or 99 for unknown)
-  - `atypicalHyperplasia` (number): Atypical hyperplasia (0=no, 1=yes, 99=unknown/not applicable)
+  - `id` (number): Individual's unique ID. Positive integer: 1, 2, 3,... .
+  - `initialAge` (number): Initial age. Real number in [20, 90).
+  - `projectionEndAge` (number): Risk projection end age, starting at `initialAge`. Real number in (20, 90], such that `initialAge` < `projectionEndAge`.
+  - `race` (number): Race. Integer in [1, 11]. See "Race codes" for details.
+  - `numBreastBiopsies` (number): Number of breast biopsies. Integer: 0, 1, 2,..., or 99 (unknown).
+  - `ageAtMenarche` (number): Age at first menstrual period. Number such that `ageAtMenarche` ≤ `initialAge`, or 99 (unknown)
+  - `ageAtFirstBirth` (number): Age at first live birth. Number such that `ageAtMenarche` ≤ `ageAtFirstBirth` ≤ `initialAge`, 98 (nulliparous), or 99 (unknown).
+  - `numRelativesWithBrCa` (number): Number of first-degree relatives with breast cancer. Integer: 0, 1, 2,..., or 99 (unknown).
+  - `atypicalHyperplasia` (number): Atypical hyperplasia indicator. 0 (no), 1 (yes), or 99 (unknown/not applicable).
 - `options` (Object, optional): Calculation options
   - `rawInput` (boolean): Whether input is in raw format (default: true)
   - `calculateAverage` (boolean): Calculate average risk for comparison (default: false)
