@@ -672,7 +672,7 @@ export function calculateRelativeRisk(validation, race) {
   if (!validation.isValid) {
     return {
       relativeRiskUnder50: null,
-      relativeRiskOver50: null,
+      relativeRiskAtOrAbove50: null,
       patternNumber: null,
     };
   }
@@ -711,7 +711,7 @@ export function calculateRelativeRisk(validation, race) {
 
   // Calculate relative risks
   const relativeRiskUnder50 = Math.exp(linearPredictor1);
-  const relativeRiskOver50 = Math.exp(linearPredictor2);
+  const relativeRiskAtOrAbove50 = Math.exp(linearPredictor2);
 
   // Calculate pattern number
   // Pattern Number = biopsyCategory*36 + menarcheCategory*12 + firstBirthCategory*3 + relativesCategory*1 + 1
@@ -725,7 +725,7 @@ export function calculateRelativeRisk(validation, race) {
 
   return {
     relativeRiskUnder50,
-    relativeRiskOver50,
+    relativeRiskAtOrAbove50,
     patternNumber,
   };
 }
@@ -767,7 +767,7 @@ export function calculateAbsoluteRisk(
   }
 
   const { initialAge, projectionEndAge, race } = data;
-  const { relativeRiskUnder50, relativeRiskOver50 } = relativeRisk;
+  const { relativeRiskUnder50, relativeRiskAtOrAbove50 } = relativeRisk;
 
   // Get race-specific constants
   const lambda1Base = LAMBDA1_BY_RACE[race];
@@ -812,7 +812,7 @@ export function calculateAbsoluteRisk(
 
     // Years 30-69 correspond to ages 50-89 (>= 50)
     for (let i = 30; i < 70; i++) {
-      oneMinusARTimesRR[i] = ar2 * relativeRiskOver50;
+      oneMinusARTimesRR[i] = ar2 * relativeRiskAtOrAbove50;
     }
   }
 
@@ -967,7 +967,7 @@ export function calculateRisk(patientData, options = {}) {
       absoluteRisk,
       averageRisk,
       relativeRiskUnder50: relativeRisk.relativeRiskUnder50,
-      relativeRiskOver50: relativeRisk.relativeRiskOver50,
+      relativeRiskAtOrAbove50: relativeRisk.relativeRiskAtOrAbove50,
       patternNumber: relativeRisk.patternNumber,
       raceEthnicity: RaceLabels[patientData.race],
       projectionInterval: patientData.projectionEndAge - patientData.initialAge,
@@ -984,7 +984,7 @@ export function calculateRisk(patientData, options = {}) {
       absoluteRisk: null,
       averageRisk: null,
       relativeRiskUnder50: null,
-      relativeRiskOver50: null,
+      relativeRiskAtOrAbove50: null,
       patternNumber: null,
       raceEthnicity: null,
       projectionInterval: null,
@@ -1422,7 +1422,7 @@ describe('Risk Calculator Integration', () => {
     expect(result.absoluteRisk).toBeGreaterThan(0);
     expect(result.absoluteRisk).toBeLessThan(100);
     expect(result.relativeRiskUnder50).toBeDefined();
-    expect(result.relativeRiskOver50).toBeDefined();
+    expect(result.relativeRiskAtOrAbove50).toBeDefined();
   });
 
   it('should calculate risk for an African American woman', () => {
@@ -1513,7 +1513,7 @@ describe('Cross-validation with R package', () => {
 
       expect(result.relativeRiskUnder50).toBeCloseTo(testCase.expectedRR1, 4);
 
-      expect(result.relativeRiskOver50).toBeCloseTo(testCase.expectedRR2, 4);
+      expect(result.relativeRiskAtOrAbove50).toBeCloseTo(testCase.expectedRR2, 4);
     });
   });
 });
@@ -1646,7 +1646,7 @@ export interface RiskResult {
   absoluteRisk: number | null;
   averageRisk: number | null;
   relativeRiskUnder50: number | null;
-  relativeRiskOver50: number | null;
+  relativeRiskAtOrAbove50: number | null;
   patternNumber: number | null;
   raceEthnicity: string | null;
   projectionInterval: number | null;
@@ -2144,7 +2144,7 @@ export class ResultsDisplay {
             
             <div class="detail-item">
               <span class="detail-label">Relative Risk (Age ≥50):</span>
-              <span class="detail-value">${result.relativeRiskOver50.toFixed(3)}</span>
+              <span class="detail-value">${result.relativeRiskAtOrAbove50.toFixed(3)}</span>
             </div>
             
             <div class="detail-item">
@@ -2883,7 +2883,7 @@ const result = calculateRisk(patient);
 if (result.success) {
   console.log(`Absolute Risk: ${result.absoluteRisk.toFixed(2)}%`);
   console.log(`Relative Risk (<50): ${result.relativeRiskUnder50.toFixed(3)}`);
-  console.log(`Relative Risk (≥50): ${result.relativeRiskOver50.toFixed(3)}`);
+  console.log(`Relative Risk (≥50): ${result.relativeRiskAtOrAbove50.toFixed(3)}`);
 } else {
   console.error('Validation errors:', result.validation.errors);
 }

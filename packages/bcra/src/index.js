@@ -29,10 +29,14 @@
 // Core calculation functions (Phase 3.1 - Complete)
 export { recodeAndValidate } from './core/recode-check.js';
 
-// Core calculation functions (to be implemented in Phase 3.2-3.5)
+// Core calculation functions (Phase 3.2 - Complete)
+export { calculateRelativeRisk } from './core/relative-risk.js';
+
+// Core calculation functions (Phase 3.3 - Complete)
+export { calculateAbsoluteRisk, expandToSingleYears } from './core/absolute-risk.js';
+
+// Core calculation functions (to be implemented in Phase 3.4-3.5)
 // export { calculateRisk, calculateBatchRisk } from './core/risk-calculator.js';
-// export { calculateRelativeRisk } from './core/relative-risk.js';
-// export { calculateAbsoluteRisk } from './core/absolute-risk.js';
 
 // Export types and constants for advanced users (Phase 2 - Complete)
 export * from './types/index.js';
