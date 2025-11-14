@@ -141,366 +141,67 @@ bcra-js/
 
 ## Phase 1: Project Setup and Infrastructure ✅
 
-**Status:** Complete
-**Completion Date:** November 10, 2025
+**Status:** Complete | **Date:** November 10, 2025
 
-### Overview
+Established monorepo structure with Vite build tooling, Vitest testing framework, ESLint v9, and Prettier. Created directory structure for `packages/bcra/` (core library) with placeholder files for future phases. Configured npm workspaces, ES module support, and library bundling (ES + UMD formats).
 
-Phase 1 established the complete project infrastructure with a modern monorepo structure, build tooling, and development workflow. All configuration files, directory structures, and development dependencies are now in place.
+**Key Files Created:**
+- `package.json` (root + library), `vite.config.js`, `eslint.config.js`, `.prettierrc`
+- Placeholder files: `src/index.js`, `src/types/index.js`, `src/constants/index.js`
+- Test setup: `test/unit/basic.test.js` (2 passing tests)
 
-### Deliverables Completed
-
-#### Directory Structure
-
-```
-bcra-js/
-├── .github/workflows/         # CI/CD workflows (placeholder)
-├── packages/bcra/             # Core library package
-│   ├── src/
-│   │   ├── index.js           # Main entry point
-│   │   ├── constants/         # Placeholder for Phase 2
-│   │   ├── core/              # Placeholder for Phase 3
-│   │   ├── utils/             # Placeholder for Phase 4
-│   │   └── types/             # Type definitions (JSDoc)
-│   ├── test/
-│   │   ├── unit/              # Unit tests
-│   │   ├── integration/       # Integration tests
-│   │   └── fixtures/          # Test data
-│   ├── package.json
-│   ├── vite.config.js
-│   ├── README.md
-│   └── LICENSE
-├── apps/bcrat/                # Web app (Phase 7, placeholder)
-├── docs/                      # Documentation (placeholder)
-├── scripts/                   # Build scripts (placeholder)
-├── package.json               # Root monorepo config
-├── .gitignore
-├── eslint.config.js           # ESLint v9 config
-└── .prettierrc                # Prettier config
-```
-
-#### Configuration Files
-
-1. **Root `package.json`** - Monorepo with npm workspaces
-   - Scripts: build, test, lint, format
-   - Dev dependencies: eslint, prettier, husky, lint-staged
-
-2. **`packages/bcra/package.json`** - Library package
-   - Type: ES module
-   - Exports: ES and UMD formats
-   - Scripts: dev, build, test, test:coverage, lint, format
-   - Dev dependencies: vite, vitest, @vitest/coverage-v8
-
-3. **`packages/bcra/vite.config.js`** - Build configuration
-   - Library mode with ES and UMD output
-   - Sourcemaps enabled
-   - Terser minification
-   - Vitest test configuration with coverage
-
-4. **`eslint.config.js`** - ESLint v9 flat config format
-   - ES2021+ support with module sourceType
-   - Browser and Node.js environments
-   - Recommended rules plus custom overrides
-
-5. **`.prettierrc`** - Code formatting
-   - Single quotes, semicolons, 2-space indent
-   - 80 character line width
-
-6. **`.gitignore`** - Version control
-   - Node.js standard ignores (node_modules, dist, coverage)
-   - IDE files (.vscode, .idea)
-   - OS files (.DS_Store)
-
-#### Placeholder Implementation
-
-Created placeholder files with JSDoc comments for future phases:
-
-- `src/index.js` - Main library entry point with VERSION export
-- `src/types/index.js` - Type definitions (RaceCode, RaceLabels, SpecialValues)
-- `src/constants/index.js` - Constants placeholder (AGE_GROUPS, MIN_AGE, MAX_AGE)
-- `src/core/risk-calculator.js` - Core calculation functions (to be implemented)
-- `src/utils/validators.js` - Validation utilities (to be implemented)
-- `test/unit/basic.test.js` - Basic setup test (2 passing tests)
-
-### Verification Results
-
-All setup verification commands passed successfully:
-
-```bash
-✓ npm install          # 230 packages installed, 0 vulnerabilities
-✓ npm run lint         # ESLint passed (2 expected warnings in placeholders)
-✓ npm run format       # Prettier formatted 12 files
-✓ npm test             # 2 tests passed in 273ms
-✓ npm run build        # Library built successfully (ES + UMD)
-```
-
-Build output:
-
-- `dist/bcra.es.js` - 0.10 kB (gzipped: 0.11 kB)
-- `dist/bcra.umd.js` - 0.42 kB (gzipped: 0.30 kB)
-
-### Key Technical Decisions
-
-1. **Monorepo Structure** - npm workspaces for managing library and web app
-2. **ES Modules** - Modern JavaScript with `"type": "module"`
-3. **Build Tool** - Vite for fast development and optimized production builds
-4. **Testing Framework** - Vitest for fast, modern testing with coverage
-5. **Code Quality** - ESLint v9 (flat config) + Prettier for consistent code style
-6. **TypeScript Support** - JSDoc for type hints without TypeScript compilation
-
-### Next Steps: Phase 2
-
-**Phase 2: Data Model and Constants**
-
-Implement the core data structures and port constants from the R package:
-
-1. Complete type definitions (PatientData, RiskResult, ValidationResult)
-2. Port lambda1.js - Breast cancer incidence rates (14 age groups, 11 races)
-3. Port lambda2.js - Competing mortality rates
-4. Port beta.js - Logistic regression coefficients by race
-5. Port attributable-risk.js - 1-AR values by race and age threshold
-6. Create constants index with all exports
-
-
-**Dependencies:** Access to R package `BCRA-R/data/` and `BCRA-R/R/` directories
+**Verification:** All build, lint, format, and test commands working. Library builds to `dist/bcra.es.js` and `dist/bcra.umd.js`.
 
 ---
-## Phase 2: Data Model and Constants
+## Phase 2: Data Model and Constants ✅
 
-### Step 2.1: Define Core Data Types
+**Status:** Complete | **Date:** November 14, 2025
 
-**Create `packages/bcra/src/types/index.js`:**
+### Phase 2.1: Define Core Data Types
+Created comprehensive type definitions in `packages/bcra/src/types/index.js` with JSDoc and TypeScript support.
 
+**Files Created:**
+- `src/types/index.js` - 4 JSDoc typedefs (RiskFactorProfile, RecodedValues, ValidationResult, RiskResult), RaceCode enum (11 races), RaceLabels, SpecialValues. Includes field mapping table (R→JS), comprehensive documentation, and usage examples.
+- `types/index.d.ts` - Complete TypeScript definitions mirroring JSDoc types
+- `src/types/FIELD_MAPPING.md` - R-to-JavaScript field name translation guide with code examples
+
+**Critical Field Names** (for Phase 3 implementers):
+- Use `initialAge` NOT `currentAge` (matches R's T1 semantics)
+- Use `projectionEndAge` NOT `projectionAge` (matches R's T2)
+- Use `numBreastBiopsies`, `numRelativesWithBrCa`, `atypicalHyperplasia` (descriptive names)
+- Special values: 98 = NULLIPAROUS, 99 = UNKNOWN/NOT_APPLICABLE
+- See `types/FIELD_MAPPING.md` for complete R→JS mapping
+
+### Phase 2.2 & 2.3: Implement Constants Module
+Ported all numerical constants from R package with full precision. All values verified against `BCRA-R/data/*.rda` files.
+
+**Files Created:**
+- `src/constants/beta.js` - 6 beta coefficient arrays (6 values each) + BETA_BY_RACE lookup
+- `src/constants/lambda1.js` - 11 incidence rate arrays (14 age groups each) + LAMBDA1_BY_RACE lookup + WHITE_AVG_LAMBDA1
+- `src/constants/lambda2.js` - 11 mortality rate arrays (14 age groups each) + LAMBDA2_BY_RACE lookup + WHITE_AVG_LAMBDA2
+- `src/constants/attributable-risk.js` - 6 AR arrays (2 values each: age<50, age>=50) + ATTRIBUTABLE_RISK_BY_RACE lookup + getAttributableRisk() helper
+- `src/constants/index.js` - Exports all constants + age-related constants (AGE_GROUPS, MIN_AGE=20, MAX_AGE=90, AGE_THRESHOLD=50, YEARS_PER_AGE_GROUP=5)
+- `test/unit/constants.test.js` - 38 passing tests verifying array dimensions, reference integrity, lookup correctness, and sample values
+
+**Key Implementation Details:**
+- Race 4 (Native American/Other) uses WHITE constants (references, not copies)
+- Races 6-11 (all Asian subgroups) share ASIAN_BETA and ASIAN_1_AR (references)
+- WHITE_AVG_LAMBDA1/2 used for average risk calculation (races 1 and 4 only)
+- All lookup objects use race codes 1-11 as keys
+- Full decimal precision preserved from R (no rounding)
+
+**Usage for Phase 3:**
 ```javascript
-/**
- * @typedef {Object} RiskFactorProfile
- * @property {number} id - Individual's unique ID. Positive integer: 1, 2, 3,... .
- * @property {number} initialAge - Initial age. Real number in [20, 90).
- * @property {number} projectionEndAge - Risk projection end age, starting at `initialAge`. Real number in (20, 90], such that `initialAge` < `projectionEndAge`.
- * @property {number} race - Race. Integer in [1, 11]. See "Race codes" for details.
- * @property {number} numBreastBiopsies - Number of breast biopsies. Integer: 0, 1, 2,..., or 99 (unknown).
- * @property {number} ageAtMenarche - Age at first menstrual period. Number such that `ageAtMenarche` ≤ `initialAge`, or 99 (unknown)
- * @property {number} ageAtFirstBirth - Age at first live birth. Number such that `ageAtMenarche` ≤ `ageAtFirstBirth` ≤ `initialAge`, 98 (nulliparous), or 99 (unknown).
- * @property {number} numRelativesWithBrCa - Number of first-degree relatives with breast cancer. Integer: 0, 1, 2,..., or 99 (unknown).
- * @property {number} atypicalHyperplasia - Atypical hyperplasia indicator. 0 (no), 1 (yes), or 99 (unknown/not applicable).
- */
+import { BETA_BY_RACE, LAMBDA1_BY_RACE, LAMBDA2_BY_RACE,
+         ATTRIBUTABLE_RISK_BY_RACE, getAttributableRisk } from './constants/index.js';
 
-/**
- * @typedef {Object} RiskResult
- * @property {number} absoluteRisk - Absolute risk percentage
- * @property {number} relativeRiskUnder50 - Relative risk for age < 50
- * @property {number} relativeRiskAtOrAbove50 - Relative risk for age >= 50
- * @property {number|null} averageRisk - Average risk (if calculated)
- * @property {string} raceEthnicity - Race/ethnicity label
- * @property {Object|null} error - Error object if calculation failed
- */
-
-/**
- * @typedef {Object} ValidationResult
- * @property {boolean} isValid - Whether input is valid
- * @property {string[]} errors - Array of error messages
- * @property {Object} warnings - Array of warning messages
- * @property {Object} recodedValues - Recoded covariate values
- */
-
-/**
- * Race codes
- * @enum {number}
- */
-export const RaceCode = {
-  WHITE: 1,
-  AFRICAN_AMERICAN: 2,
-  HISPANIC_US_BORN: 3,
-  NATIVE_AMERICAN_OTHER: 4,
-  HISPANIC_FOREIGN_BORN: 5,
-  CHINESE: 6,
-  JAPANESE: 7,
-  FILIPINO: 8,
-  HAWAIIAN: 9,
-  OTHER_PACIFIC_ISLANDER: 10,
-  OTHER_ASIAN: 11,
-};
-
-/**
- * Race/ethnicity labels
- * @type {Object.<number, string>}
- */
-export const RaceLabels = {
-  1: 'Non-Hispanic White',
-  2: 'African-American',
-  3: 'Hispanic (US Born)',
-  4: 'Native American/Other',
-  5: 'Hispanic (Foreign Born)',
-  6: 'Chinese-American',
-  7: 'Japanese-American',
-  8: 'Filipino-American',
-  9: 'Hawaiian',
-  10: 'Other Pacific Islander',
-  11: 'Other Asian',
-};
-
-/**
- * Special values for unknown/not applicable
- */
-export const SpecialValues = {
-  UNKNOWN: 99,
-  NULLIPAROUS: 98,
-  NOT_APPLICABLE: 99,
-};
+const beta = BETA_BY_RACE[patientData.race];  // 6-element array
+const lambda1 = LAMBDA1_BY_RACE[patientData.race];  // 14-element array
+const lambda2 = LAMBDA2_BY_RACE[patientData.race];  // 14-element array
+const oneMinusAR = getAttributableRisk(patientData.race, age);  // single value
 ```
 
-### Step 2.2: Implement Constants Module
-
-**Create `packages/bcra/src/constants/lambda1.js`:**
-
-This file will contain all breast cancer composite incidence rates. The structure should mirror the R package exactly.
-
-```javascript
-/**
- * Breast cancer composite incidence rates (lambda1)
- * Age groups: 20-24, 25-29, ..., 85-89 (14 groups)
- * Rates are per person-year
- */
-
-// SEER BrCa incidence rates for non-Hispanic white women, SEER white 1983-87
-export const WHITE_LAMBDA1 = [
-  0.00001, 0.000076, 0.000266, 0.000661, 0.001265, 0.001866, 0.002211, 0.002721,
-  0.003348, 0.003923, 0.004178, 0.004439, 0.004421, 0.004109,
-];
-
-// SEER BrCa incidence rates for "avg" non-Hispanic white women, SEER white 1992-96
-export const WHITE_AVG_LAMBDA1 = [
-  0.0000122, 0.0000741, 0.0002297, 0.0005649, 0.0011645, 0.0019525, 0.0026154,
-  0.0030279, 0.0036757, 0.0042029, 0.0047308, 0.0049425, 0.0047976, 0.0040106,
-];
-
-// SEER Black 1994-98
-export const BLACK_LAMBDA1 = [
-  0.00002696, 0.00011295, 0.00031094, 0.00067639, 0.00119444, 0.00187394,
-  0.00241504, 0.00291112, 0.00310127, 0.0036656, 0.00393132, 0.00408951,
-  0.00396793, 0.00363712,
-];
-
-// SEER Ca Hispanic 1995-2004 (US Born)
-export const HISPANIC_US_LAMBDA1 = [
-  0.0000166, 0.0000741, 0.000274, 0.0006099, 0.0012225, 0.0019027, 0.0023142,
-  0.0028357, 0.0031144, 0.0030794, 0.0033344, 0.0035082, 0.0025308, 0.0020414,
-];
-
-// SEER Ca Hispanic 1995-2004 (Foreign Born)
-export const HISPANIC_FOREIGN_LAMBDA1 = [
-  0.0000102, 0.0000531, 0.0001578, 0.0003602, 0.0007617, 0.0011599, 0.0014111,
-  0.0017245, 0.0020619, 0.0023603, 0.0025575, 0.0028227, 0.0028295, 0.0025868,
-];
-
-// Native American/Other - uses White rates
-export const OTHER_LAMBDA1 = WHITE_LAMBDA1;
-
-// Asian-American subgroups (SEER18 1998-2002)
-export const CHINESE_LAMBDA1 = [
-  0.000004059636, 0.000045944465, 0.000188279352, 0.000492930493,
-  0.000913603501, 0.001471537353, 0.001421275482, 0.001970946494,
-  0.001674745804, 0.001821581075, 0.001834477198, 0.001919911972,
-  0.002233371071, 0.002247315779,
-];
-
-export const JAPANESE_LAMBDA1 = [
-  0.000000000001, 0.000099483924, 0.000287041681, 0.000545285759,
-  0.001152211095, 0.001859245108, 0.002606291272, 0.003221751682,
-  0.004006961859, 0.003521715275, 0.003593038294, 0.003589303081,
-  0.003538507159, 0.002051572909,
-];
-
-export const FILIPINO_LAMBDA1 = [
-  0.000007500161, 0.000081073945, 0.000227492565, 0.000549786433,
-  0.001129400541, 0.001813873795, 0.002223665639, 0.002680309266, 0.00289121923,
-  0.002534421279, 0.002457159409, 0.00228661692, 0.001814802825, 0.00175087913,
-];
-
-export const HAWAIIAN_LAMBDA1 = [
-  0.000045080582, 0.000098570724, 0.00033997086, 0.000852591429, 0.001668562761,
-  0.002552703284, 0.003321774046, 0.005373001776, 0.005237808549,
-  0.005581732512, 0.005677419355, 0.006513409962, 0.003889457523,
-  0.002949061662,
-];
-
-export const OTHER_PACIFIC_ISLANDER_LAMBDA1 = [
-  0.000000000001, 0.000071525212, 0.000288799028, 0.000602250698,
-  0.000755579402, 0.000766406354, 0.001893124938, 0.002365580107, 0.00284393307,
-  0.002920921732, 0.002330395655, 0.002036291235, 0.001482683983,
-  0.001012248203,
-];
-
-export const OTHER_ASIAN_LAMBDA1 = [
-  0.000012355409, 0.000059526456, 0.000184320831, 0.000454677273,
-  0.000791265338, 0.001048462801, 0.001372467817, 0.001495473711,
-  0.001646746198, 0.001478363563, 0.001216010125, 0.0010676637, 0.001376104012,
-  0.000661576644,
-];
-
-/**
- * Lookup table for lambda1 by race code
- */
-export const LAMBDA1_BY_RACE = {
-  1: WHITE_LAMBDA1,
-  2: BLACK_LAMBDA1,
-  3: HISPANIC_US_LAMBDA1,
-  4: OTHER_LAMBDA1,
-  5: HISPANIC_FOREIGN_LAMBDA1,
-  6: CHINESE_LAMBDA1,
-  7: JAPANESE_LAMBDA1,
-  8: FILIPINO_LAMBDA1,
-  9: HAWAIIAN_LAMBDA1,
-  10: OTHER_PACIFIC_ISLANDER_LAMBDA1,
-  11: OTHER_ASIAN_LAMBDA1,
-};
-
-/**
- * Average rates for white women (used in average risk calculation)
- */
-export const AVG_LAMBDA1 = WHITE_AVG_LAMBDA1;
-```
-
-**Create similar files for:**
-
-- `packages/bcra/src/constants/lambda2.js` - Competing mortality rates
-- `packages/bcra/src/constants/beta.js` - Logistic regression coefficients
-- `packages/bcra/src/constants/attributable-risk.js` - 1-Attributable Risk values
-
-### Step 2.3: Create Constants Index
-
-**Create `packages/bcra/src/constants/index.js`:**
-
-```javascript
-export * from './lambda1.js';
-export * from './lambda2.js';
-export * from './beta.js';
-export * from './attributable-risk.js';
-
-/**
- * Age group boundaries (in years)
- * 14 groups: 20-24, 25-29, ..., 85-89
- */
-export const AGE_GROUPS = [
-  20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85,
-];
-
-/**
- * Number of single years in each 5-year age group
- */
-export const YEARS_PER_AGE_GROUP = 5;
-
-/**
- * Minimum and maximum ages for risk calculation
- */
-export const MIN_AGE = 20;
-export const MAX_AGE = 90;
-
-/**
- * Age threshold for relative risk calculation
- */
-export const AGE_THRESHOLD = 50;
-```
+**Verification:** All 38 constants tests passing. Values match R package exports exactly.
 
 ---
 
@@ -531,7 +232,7 @@ export function recodeAndValidate(data, rawInput = true) {
   };
 
   // Validate age constraints
-  const ageValidation = validateAges(data.currentAge, data.projectionAge);
+  const ageValidation = validateAges(data.initialAge, data.projectionEndAge);
   if (!ageValidation.valid) {
     result.errors.push(...ageValidation.errors);
     result.isValid = false;
@@ -550,8 +251,8 @@ export function recodeAndValidate(data, rawInput = true) {
   if (rawInput) {
     // Recode number of biopsies
     const biopsyRecode = recodeNumberOfBiopsies(
-      data.numberOfBiopsies,
-      data.hyperplasia,
+      data.numBreastBiopsies,
+      data.atypicalHyperplasia,
       data.race
     );
     if (!biopsyRecode.valid) {
@@ -565,7 +266,7 @@ export function recodeAndValidate(data, rawInput = true) {
     // Recode age at menarche
     const menarcheRecode = recodeAgeAtMenarche(
       data.ageAtMenarche,
-      data.currentAge,
+      data.initialAge,
       data.race
     );
     if (!menarcheRecode.valid) {
@@ -579,7 +280,7 @@ export function recodeAndValidate(data, rawInput = true) {
     const firstBirthRecode = recodeAgeAtFirstBirth(
       data.ageAtFirstBirth,
       data.ageAtMenarche,
-      data.currentAge,
+      data.initialAge,
       data.race
     );
     if (!firstBirthRecode.valid) {
@@ -591,7 +292,7 @@ export function recodeAndValidate(data, rawInput = true) {
 
     // Recode number of relatives
     const relativesRecode = recodeNumberOfRelatives(
-      data.firstDegreeRelatives,
+      data.numRelativesWithBrCa,
       data.race
     );
     if (!relativesRecode.valid) {
@@ -602,10 +303,10 @@ export function recodeAndValidate(data, rawInput = true) {
     result.recodedValues.relativesCategory = relativesRecode.category;
   } else {
     // Data already recoded, use as-is with minimal validation
-    result.recodedValues.biopsyCategory = data.numberOfBiopsies;
+    result.recodedValues.biopsyCategory = data.numBreastBiopsies;
     result.recodedValues.menarcheCategory = data.ageAtMenarche;
     result.recodedValues.firstBirthCategory = data.ageAtFirstBirth;
-    result.recodedValues.relativesCategory = data.firstDegreeRelatives;
+    result.recodedValues.relativesCategory = data.numRelativesWithBrCa;
     result.recodedValues.hyperplasiaMultiplier = 1.0; // Default
   }
 
@@ -613,24 +314,24 @@ export function recodeAndValidate(data, rawInput = true) {
 }
 
 /**
- * Validates age constraints: 20 <= currentAge < projectionAge <= 90
+ * Validates age constraints: 20 <= initialAge < projectionEndAge <= 90
  */
-function validateAges(currentAge, projectionAge) {
+function validateAges(initialAge, projectionEndAge) {
   const errors = [];
   let valid = true;
 
-  if (currentAge < 20 || currentAge >= 90) {
-    errors.push('Current age must be between 20 and 89 years');
+  if (initialAge < 20 || initialAge >= 90) {
+    errors.push('Initial age must be between 20 and 89 years');
     valid = false;
   }
 
-  if (projectionAge > 90) {
-    errors.push('Projection age must be 90 years or less');
+  if (projectionEndAge > 90) {
+    errors.push('Projection end age must be 90 years or less');
     valid = false;
   }
 
-  if (currentAge >= projectionAge) {
-    errors.push('Projection age must be greater than current age');
+  if (initialAge >= projectionEndAge) {
+    errors.push('Projection end age must be greater than initial age');
     valid = false;
   }
 
@@ -655,7 +356,7 @@ function validateRace(race) {
 }
 
 /**
- * Recodes number of biopsies and validates against hyperplasia
+ * Recodes number of biopsies and validates against atypical hyperplasia
  *
  * Recoding rules:
  * - 0 or 99 (unknown) → Category 0
@@ -663,10 +364,10 @@ function validateRace(race) {
  * - 2+ → Category 2
  *
  * Consistency requirements:
- * (A) If biopsies = 0 or 99, hyperplasia MUST be 99 (not applicable)
- * (B) If biopsies > 0 and < 99, hyperplasia = 0, 1, or 99
+ * (A) If biopsies = 0 or 99, atypical hyperplasia MUST be 99 (not applicable)
+ * (B) If biopsies > 0 and < 99, atypical hyperplasia = 0, 1, or 99
  */
-function recodeNumberOfBiopsies(numberOfBiopsies, hyperplasia, race) {
+function recodeNumberOfBiopsies(numBreastBiopsies, atypicalHyperplasia, race) {
   let category;
   let multiplier = 1.0;
   let valid = true;
@@ -674,13 +375,13 @@ function recodeNumberOfBiopsies(numberOfBiopsies, hyperplasia, race) {
 
   // Check consistency requirement (A)
   if (
-    (numberOfBiopsies === 0 || numberOfBiopsies === SpecialValues.UNKNOWN) &&
-    hyperplasia !== SpecialValues.NOT_APPLICABLE
+    (numBreastBiopsies === 0 || numBreastBiopsies === SpecialValues.UNKNOWN) &&
+    atypicalHyperplasia !== SpecialValues.NOT_APPLICABLE
   ) {
     return {
       valid: false,
       error:
-        'Consistency error: If no biopsies, hyperplasia must be not applicable (99)',
+        'Consistency error: If no biopsies, atypical hyperplasia must be not applicable (99)',
       category: null,
       multiplier: null,
     };
@@ -688,30 +389,30 @@ function recodeNumberOfBiopsies(numberOfBiopsies, hyperplasia, race) {
 
   // Check consistency requirement (B)
   if (
-    numberOfBiopsies > 0 &&
-    numberOfBiopsies < SpecialValues.UNKNOWN &&
-    hyperplasia !== 0 &&
-    hyperplasia !== 1 &&
-    hyperplasia !== SpecialValues.UNKNOWN
+    numBreastBiopsies > 0 &&
+    numBreastBiopsies < SpecialValues.UNKNOWN &&
+    atypicalHyperplasia !== 0 &&
+    atypicalHyperplasia !== 1 &&
+    atypicalHyperplasia !== SpecialValues.UNKNOWN
   ) {
     return {
       valid: false,
       error:
-        'Consistency error: If biopsies performed, hyperplasia must be 0, 1, or 99',
+        'Consistency error: If biopsies performed, atypical hyperplasia must be 0, 1, or 99',
       category: null,
       multiplier: null,
     };
   }
 
   // Recode biopsies
-  if (numberOfBiopsies === 0 || numberOfBiopsies === SpecialValues.UNKNOWN) {
+  if (numBreastBiopsies === 0 || numBreastBiopsies === SpecialValues.UNKNOWN) {
     category = 0;
     multiplier = 1.0;
-  } else if (numberOfBiopsies === 1) {
+  } else if (numBreastBiopsies === 1) {
     category = 1;
   } else if (
-    numberOfBiopsies >= 2 &&
-    numberOfBiopsies < SpecialValues.UNKNOWN
+    numBreastBiopsies >= 2 &&
+    numBreastBiopsies < SpecialValues.UNKNOWN
   ) {
     category = 2;
   } else {
@@ -723,13 +424,13 @@ function recodeNumberOfBiopsies(numberOfBiopsies, hyperplasia, race) {
     };
   }
 
-  // Set hyperplasia multiplier
+  // Set atypical hyperplasia multiplier
   if (category > 0) {
-    if (hyperplasia === 0) {
+    if (atypicalHyperplasia === 0) {
       multiplier = 0.93;
-    } else if (hyperplasia === 1) {
+    } else if (atypicalHyperplasia === 1) {
       multiplier = 1.82;
-    } else if (hyperplasia === SpecialValues.UNKNOWN) {
+    } else if (atypicalHyperplasia === SpecialValues.UNKNOWN) {
       multiplier = 1.0;
     }
   }
@@ -739,7 +440,7 @@ function recodeNumberOfBiopsies(numberOfBiopsies, hyperplasia, race) {
     race === RaceCode.HISPANIC_US_BORN ||
     race === RaceCode.HISPANIC_FOREIGN_BORN
   ) {
-    if (numberOfBiopsies === 0 || numberOfBiopsies === SpecialValues.UNKNOWN) {
+    if (numBreastBiopsies === 0 || numBreastBiopsies === SpecialValues.UNKNOWN) {
       category = 0;
     } else if (category === 2) {
       category = 1; // Group 2+ with 1
@@ -761,14 +462,14 @@ function recodeNumberOfBiopsies(numberOfBiopsies, hyperplasia, race) {
  * - African-American: Category 2 (≤11) grouped with Category 1 (12-13)
  * - Hispanic US Born: Not in RR model, all set to 0
  */
-function recodeAgeAtMenarche(ageAtMenarche, currentAge, race) {
+function recodeAgeAtMenarche(ageAtMenarche, initialAge, race) {
   let category;
 
   // Validation
-  if (ageAtMenarche > currentAge && ageAtMenarche !== SpecialValues.UNKNOWN) {
+  if (ageAtMenarche > initialAge && ageAtMenarche !== SpecialValues.UNKNOWN) {
     return {
       valid: false,
-      error: 'Age at menarche cannot be greater than current age',
+      error: 'Age at menarche cannot be greater than initial age',
       category: null,
     };
   }
@@ -820,7 +521,7 @@ function recodeAgeAtMenarche(ageAtMenarche, currentAge, race) {
 function recodeAgeAtFirstBirth(
   ageAtFirstBirth,
   ageAtMenarche,
-  currentAge,
+  initialAge,
   race
 ) {
   let category;
@@ -840,12 +541,12 @@ function recodeAgeAtFirstBirth(
   }
 
   if (
-    ageAtFirstBirth > currentAge &&
+    ageAtFirstBirth > initialAge &&
     ageAtFirstBirth < SpecialValues.NULLIPAROUS
   ) {
     return {
       valid: false,
-      error: 'Age at first birth cannot be greater than current age',
+      error: 'Age at first birth cannot be greater than initial age',
       category: null,
     };
   }
@@ -917,17 +618,17 @@ function recodeAgeAtFirstBirth(
  * - Asian-American (races 6-11): Category 2 grouped with 1
  * - Hispanic (US/Foreign): Category 2 grouped with 1
  */
-function recodeNumberOfRelatives(numberOfRelatives, race) {
+function recodeNumberOfRelatives(numRelativesWithBrCa, race) {
   let category;
 
   // Recode
-  if (numberOfRelatives === 0 || numberOfRelatives === SpecialValues.UNKNOWN) {
+  if (numRelativesWithBrCa === 0 || numRelativesWithBrCa === SpecialValues.UNKNOWN) {
     category = 0;
-  } else if (numberOfRelatives === 1) {
+  } else if (numRelativesWithBrCa === 1) {
     category = 1;
   } else if (
-    numberOfRelatives >= 2 &&
-    numberOfRelatives < SpecialValues.UNKNOWN
+    numRelativesWithBrCa >= 2 &&
+    numRelativesWithBrCa < SpecialValues.UNKNOWN
   ) {
     category = 2;
   } else {
@@ -1065,7 +766,7 @@ export function calculateAbsoluteRisk(
     return null;
   }
 
-  const { currentAge, projectionAge, race } = data;
+  const { initialAge, projectionEndAge, race } = data;
   const { relativeRiskUnder50, relativeRiskOver50 } = relativeRisk;
 
   // Get race-specific constants
@@ -1117,8 +818,8 @@ export function calculateAbsoluteRisk(
 
   // Calculate risk using numerical integration
   const risk = integrateRisk(
-    currentAge,
-    projectionAge,
+    initialAge,
+    projectionEndAge,
     lambda1,
     lambda2,
     oneMinusARTimesRR
@@ -1269,7 +970,7 @@ export function calculateRisk(patientData, options = {}) {
       relativeRiskOver50: relativeRisk.relativeRiskOver50,
       patternNumber: relativeRisk.patternNumber,
       raceEthnicity: RaceLabels[patientData.race],
-      projectionInterval: patientData.projectionAge - patientData.currentAge,
+      projectionInterval: patientData.projectionEndAge - patientData.initialAge,
       validation: {
         isValid: validation.isValid,
         errors: validation.errors,
@@ -1359,14 +1060,14 @@ export function validatePatientDataStructure(data) {
 
   const requiredFields = [
     'id',
-    'currentAge',
-    'projectionAge',
+    'initialAge',
+    'projectionEndAge',
     'race',
-    'numberOfBiopsies',
+    'numBreastBiopsies',
     'ageAtMenarche',
     'ageAtFirstBirth',
-    'firstDegreeRelatives',
-    'hyperplasia',
+    'numRelativesWithBrCa',
+    'atypicalHyperplasia',
   ];
 
   for (const field of requiredFields) {
@@ -1377,14 +1078,14 @@ export function validatePatientDataStructure(data) {
 
   // Type checking
   const numericFields = [
-    'currentAge',
-    'projectionAge',
+    'initialAge',
+    'projectionEndAge',
     'race',
-    'numberOfBiopsies',
+    'numBreastBiopsies',
     'ageAtMenarche',
     'ageAtFirstBirth',
-    'firstDegreeRelatives',
-    'hyperplasia',
+    'numRelativesWithBrCa',
+    'atypicalHyperplasia',
   ];
 
   for (const field of numericFields) {
@@ -1428,14 +1129,14 @@ export function validateAge(age, fieldName) {
 export function sanitizePatientData(data) {
   return {
     ...data,
-    currentAge: Number(data.currentAge),
-    projectionAge: Number(data.projectionAge),
+    initialAge: Number(data.initialAge),
+    projectionEndAge: Number(data.projectionEndAge),
     race: Number(data.race),
-    numberOfBiopsies: Number(data.numberOfBiopsies),
+    numBreastBiopsies: Number(data.numBreastBiopsies),
     ageAtMenarche: Number(data.ageAtMenarche),
     ageAtFirstBirth: Number(data.ageAtFirstBirth),
-    firstDegreeRelatives: Number(data.firstDegreeRelatives),
-    hyperplasia: Number(data.hyperplasia),
+    numRelativesWithBrCa: Number(data.numRelativesWithBrCa),
+    atypicalHyperplasia: Number(data.atypicalHyperplasia),
   };
 }
 ```
@@ -1512,14 +1213,14 @@ describe('recodeAndValidate', () => {
   describe('Age validation', () => {
     it('should reject age below 20', () => {
       const data = {
-        currentAge: 19,
-        projectionAge: 25,
+        initialAge: 19,
+        projectionEndAge: 25,
         race: RaceCode.WHITE,
-        numberOfBiopsies: 0,
+        numBreastBiopsies: 0,
         ageAtMenarche: 12,
         ageAtFirstBirth: 25,
-        firstDegreeRelatives: 0,
-        hyperplasia: 99,
+        numRelativesWithBrCa: 0,
+        atypicalHyperplasia: 99,
       };
 
       const result = recodeAndValidate(data, true);
@@ -1531,14 +1232,14 @@ describe('recodeAndValidate', () => {
 
     it('should reject projection age <= current age', () => {
       const data = {
-        currentAge: 40,
-        projectionAge: 40,
+        initialAge: 40,
+        projectionEndAge: 40,
         race: RaceCode.WHITE,
-        numberOfBiopsies: 0,
+        numBreastBiopsies: 0,
         ageAtMenarche: 12,
         ageAtFirstBirth: 25,
-        firstDegreeRelatives: 0,
-        hyperplasia: 99,
+        numRelativesWithBrCa: 0,
+        atypicalHyperplasia: 99,
       };
 
       const result = recodeAndValidate(data, true);
@@ -1550,14 +1251,14 @@ describe('recodeAndValidate', () => {
 
     it('should accept valid age range', () => {
       const data = {
-        currentAge: 40,
-        projectionAge: 50,
+        initialAge: 40,
+        projectionEndAge: 50,
         race: RaceCode.WHITE,
-        numberOfBiopsies: 0,
+        numBreastBiopsies: 0,
         ageAtMenarche: 12,
         ageAtFirstBirth: 25,
-        firstDegreeRelatives: 0,
-        hyperplasia: 99,
+        numRelativesWithBrCa: 0,
+        atypicalHyperplasia: 99,
       };
 
       const result = recodeAndValidate(data, true);
@@ -1568,14 +1269,14 @@ describe('recodeAndValidate', () => {
   describe('Biopsy recoding', () => {
     it('should recode 0 biopsies to category 0', () => {
       const data = {
-        currentAge: 40,
-        projectionAge: 50,
+        initialAge: 40,
+        projectionEndAge: 50,
         race: RaceCode.WHITE,
-        numberOfBiopsies: 0,
+        numBreastBiopsies: 0,
         ageAtMenarche: 12,
         ageAtFirstBirth: 25,
-        firstDegreeRelatives: 0,
-        hyperplasia: 99,
+        numRelativesWithBrCa: 0,
+        atypicalHyperplasia: 99,
       };
 
       const result = recodeAndValidate(data, true);
@@ -1584,14 +1285,14 @@ describe('recodeAndValidate', () => {
 
     it('should recode 1 biopsy to category 1', () => {
       const data = {
-        currentAge: 40,
-        projectionAge: 50,
+        initialAge: 40,
+        projectionEndAge: 50,
         race: RaceCode.WHITE,
-        numberOfBiopsies: 1,
+        numBreastBiopsies: 1,
         ageAtMenarche: 12,
         ageAtFirstBirth: 25,
-        firstDegreeRelatives: 0,
-        hyperplasia: 0,
+        numRelativesWithBrCa: 0,
+        atypicalHyperplasia: 0,
       };
 
       const result = recodeAndValidate(data, true);
@@ -1600,14 +1301,14 @@ describe('recodeAndValidate', () => {
 
     it('should recode 2+ biopsies to category 2', () => {
       const data = {
-        currentAge: 40,
-        projectionAge: 50,
+        initialAge: 40,
+        projectionEndAge: 50,
         race: RaceCode.WHITE,
-        numberOfBiopsies: 3,
+        numBreastBiopsies: 3,
         ageAtMenarche: 12,
         ageAtFirstBirth: 25,
-        firstDegreeRelatives: 0,
-        hyperplasia: 1,
+        numRelativesWithBrCa: 0,
+        atypicalHyperplasia: 1,
       };
 
       const result = recodeAndValidate(data, true);
@@ -1616,14 +1317,14 @@ describe('recodeAndValidate', () => {
 
     it('should validate hyperplasia consistency for 0 biopsies', () => {
       const data = {
-        currentAge: 40,
-        projectionAge: 50,
+        initialAge: 40,
+        projectionEndAge: 50,
         race: RaceCode.WHITE,
-        numberOfBiopsies: 0,
+        numBreastBiopsies: 0,
         ageAtMenarche: 12,
         ageAtFirstBirth: 25,
-        firstDegreeRelatives: 0,
-        hyperplasia: 1, // Invalid: should be 99
+        numRelativesWithBrCa: 0,
+        atypicalHyperplasia: 1, // Invalid: should be 99
       };
 
       const result = recodeAndValidate(data, true);
@@ -1637,14 +1338,14 @@ describe('recodeAndValidate', () => {
   describe('Race-specific recoding', () => {
     it('should set menarche to 0 for Hispanic US Born', () => {
       const data = {
-        currentAge: 40,
-        projectionAge: 50,
+        initialAge: 40,
+        projectionEndAge: 50,
         race: RaceCode.HISPANIC_US_BORN,
-        numberOfBiopsies: 0,
+        numBreastBiopsies: 0,
         ageAtMenarche: 10,
         ageAtFirstBirth: 25,
-        firstDegreeRelatives: 0,
-        hyperplasia: 99,
+        numRelativesWithBrCa: 0,
+        atypicalHyperplasia: 99,
       };
 
       const result = recodeAndValidate(data, true);
@@ -1653,14 +1354,14 @@ describe('recodeAndValidate', () => {
 
     it('should set first birth to 0 for African American', () => {
       const data = {
-        currentAge: 40,
-        projectionAge: 50,
+        initialAge: 40,
+        projectionEndAge: 50,
         race: RaceCode.AFRICAN_AMERICAN,
-        numberOfBiopsies: 0,
+        numBreastBiopsies: 0,
         ageAtMenarche: 12,
         ageAtFirstBirth: 25,
-        firstDegreeRelatives: 0,
-        hyperplasia: 99,
+        numRelativesWithBrCa: 0,
+        atypicalHyperplasia: 99,
       };
 
       const result = recodeAndValidate(data, true);
@@ -1669,14 +1370,14 @@ describe('recodeAndValidate', () => {
 
     it('should group Hispanic biopsies 2+ with 1', () => {
       const data = {
-        currentAge: 40,
-        projectionAge: 50,
+        initialAge: 40,
+        projectionEndAge: 50,
         race: RaceCode.HISPANIC_FOREIGN_BORN,
-        numberOfBiopsies: 3,
+        numBreastBiopsies: 3,
         ageAtMenarche: 12,
         ageAtFirstBirth: 25,
-        firstDegreeRelatives: 0,
-        hyperplasia: 1,
+        numRelativesWithBrCa: 0,
+        atypicalHyperplasia: 1,
       };
 
       const result = recodeAndValidate(data, true);
@@ -1705,14 +1406,14 @@ describe('Risk Calculator Integration', () => {
   it('should calculate risk for a typical White woman', () => {
     const patient = {
       id: 1,
-      currentAge: 40,
-      projectionAge: 50,
+      initialAge: 40,
+      projectionEndAge: 50,
       race: RaceCode.WHITE,
-      numberOfBiopsies: 1,
+      numBreastBiopsies: 1,
       ageAtMenarche: 12,
       ageAtFirstBirth: 25,
-      firstDegreeRelatives: 1,
-      hyperplasia: 0,
+      numRelativesWithBrCa: 1,
+      atypicalHyperplasia: 0,
     };
 
     const result = calculateRisk(patient);
@@ -1727,14 +1428,14 @@ describe('Risk Calculator Integration', () => {
   it('should calculate risk for an African American woman', () => {
     const patient = {
       id: 2,
-      currentAge: 35,
-      projectionAge: 40,
+      initialAge: 35,
+      projectionEndAge: 40,
       race: RaceCode.AFRICAN_AMERICAN,
-      numberOfBiopsies: 0,
+      numBreastBiopsies: 0,
       ageAtMenarche: 11,
       ageAtFirstBirth: 22,
-      firstDegreeRelatives: 0,
-      hyperplasia: 99,
+      numRelativesWithBrCa: 0,
+      atypicalHyperplasia: 99,
     };
 
     const result = calculateRisk(patient);
@@ -1747,14 +1448,14 @@ describe('Risk Calculator Integration', () => {
   it('should handle nulliparous women', () => {
     const patient = {
       id: 3,
-      currentAge: 30,
-      projectionAge: 35,
+      initialAge: 30,
+      projectionEndAge: 35,
       race: RaceCode.WHITE,
-      numberOfBiopsies: 0,
+      numBreastBiopsies: 0,
       ageAtMenarche: 13,
       ageAtFirstBirth: 98, // Nulliparous
-      firstDegreeRelatives: 0,
-      hyperplasia: 99,
+      numRelativesWithBrCa: 0,
+      atypicalHyperplasia: 99,
     };
 
     const result = calculateRisk(patient);
@@ -1766,14 +1467,14 @@ describe('Risk Calculator Integration', () => {
   it('should return error for invalid input', () => {
     const patient = {
       id: 4,
-      currentAge: 15, // Invalid: too young
-      projectionAge: 25,
+      initialAge: 15, // Invalid: too young
+      projectionEndAge: 25,
       race: RaceCode.WHITE,
-      numberOfBiopsies: 0,
+      numBreastBiopsies: 0,
       ageAtMenarche: 12,
       ageAtFirstBirth: 25,
-      firstDegreeRelatives: 0,
-      hyperplasia: 99,
+      numRelativesWithBrCa: 0,
+      atypicalHyperplasia: 99,
     };
 
     const result = calculateRisk(patient);
@@ -1930,14 +1631,14 @@ export default defineConfig({
 ```typescript
 export interface PatientData {
   id: string | number;
-  currentAge: number;
-  projectionAge: number;
+  initialAge: number;
+  projectionEndAge: number;
   race: number;
-  numberOfBiopsies: number;
+  numBreastBiopsies: number;
   ageAtMenarche: number;
   ageAtFirstBirth: number;
-  firstDegreeRelatives: number;
-  hyperplasia: number;
+  numRelativesWithBrCa: number;
+  atypicalHyperplasia: number;
 }
 
 export interface RiskResult {
@@ -2031,8 +1732,8 @@ The library is available via jsDelivr:
 
   const result = BCRA.calculateRisk({
     id: 1,
-    currentAge: 40,
-    projectionAge: 50,
+    initialAge: 40,
+    projectionEndAge: 50,
     race: 1,
     // ... other fields
   });
@@ -2196,32 +1897,32 @@ export class RiskForm {
         <h2>Patient Information</h2>
         
         <div class="form-group">
-          <label for="currentAge">
-            Current Age (years) *
+          <label for="initialAge">
+            Initial Age (years) *
             <span class="help-text">Must be between 20 and 89</span>
           </label>
-          <input 
-            type="number" 
-            id="currentAge" 
-            name="currentAge" 
-            min="20" 
-            max="89" 
+          <input
+            type="number"
+            id="initialAge"
+            name="initialAge"
+            min="20"
+            max="89"
             required
             placeholder="e.g., 40"
           >
         </div>
 
         <div class="form-group">
-          <label for="projectionAge">
-            Projection Age (years) *
-            <span class="help-text">Age for risk projection, must be greater than current age</span>
+          <label for="projectionEndAge">
+            Projection End Age (years) *
+            <span class="help-text">Age for risk projection, must be greater than initial age</span>
           </label>
-          <input 
-            type="number" 
-            id="projectionAge" 
-            name="projectionAge" 
-            min="20" 
-            max="90" 
+          <input
+            type="number"
+            id="projectionEndAge"
+            name="projectionEndAge"
+            min="20"
+            max="90"
             required
             placeholder="e.g., 50"
           >
@@ -2246,26 +1947,26 @@ export class RiskForm {
         <h2>Risk Factors</h2>
 
         <div class="form-group">
-          <label for="numberOfBiopsies">
+          <label for="numBreastBiopsies">
             Number of Breast Biopsies *
             <span class="help-text">Enter 0 if none, 99 if unknown</span>
           </label>
-          <input 
-            type="number" 
-            id="numberOfBiopsies" 
-            name="numberOfBiopsies" 
-            min="0" 
+          <input
+            type="number"
+            id="numBreastBiopsies"
+            name="numBreastBiopsies"
+            min="0"
             required
             placeholder="e.g., 0"
           >
         </div>
 
         <div class="form-group">
-          <label for="hyperplasia">
+          <label for="atypicalHyperplasia">
             Atypical Hyperplasia *
             <span class="help-text">Found in biopsy? (0=No, 1=Yes, 99=Unknown/Not Applicable)</span>
           </label>
-          <select id="hyperplasia" name="hyperplasia" required>
+          <select id="atypicalHyperplasia" name="atypicalHyperplasia" required>
             <option value="">Select</option>
             <option value="0">No</option>
             <option value="1">Yes</option>
@@ -2305,15 +2006,15 @@ export class RiskForm {
         </div>
 
         <div class="form-group">
-          <label for="firstDegreeRelatives">
+          <label for="numRelativesWithBrCa">
             Number of First-Degree Relatives with Breast Cancer *
             <span class="help-text">Mother, sisters, daughters. Enter 99 if unknown</span>
           </label>
-          <input 
-            type="number" 
-            id="firstDegreeRelatives" 
-            name="firstDegreeRelatives" 
-            min="0" 
+          <input
+            type="number"
+            id="numRelativesWithBrCa"
+            name="numRelativesWithBrCa"
+            min="0"
             required
             placeholder="e.g., 0"
           >
@@ -2334,27 +2035,27 @@ export class RiskForm {
   }
 
   attachEventListeners() {
-    // Auto-update projection age when current age changes
-    const currentAgeInput = this.container.querySelector('#currentAge');
-    const projectionAgeInput = this.container.querySelector('#projectionAge');
+    // Auto-update projection age when initial age changes
+    const initialAgeInput = this.container.querySelector('#initialAge');
+    const projectionEndAgeInput = this.container.querySelector('#projectionEndAge');
 
-    currentAgeInput.addEventListener('input', (e) => {
-      const currentAge = parseInt(e.target.value);
-      if (!isNaN(currentAge)) {
-        projectionAgeInput.min = currentAge + 1;
+    initialAgeInput.addEventListener('input', (e) => {
+      const initialAge = parseInt(e.target.value);
+      if (!isNaN(initialAge)) {
+        projectionEndAgeInput.min = initialAge + 1;
         // Suggest 5-year projection
         if (
-          !projectionAgeInput.value ||
-          parseInt(projectionAgeInput.value) <= currentAge
+          !projectionEndAgeInput.value ||
+          parseInt(projectionEndAgeInput.value) <= initialAge
         ) {
-          projectionAgeInput.value = Math.min(currentAge + 5, 90);
+          projectionEndAgeInput.value = Math.min(initialAge + 5, 90);
         }
       }
     });
 
-    // Biopsy/hyperplasia consistency logic
-    const biopsiesInput = this.container.querySelector('#numberOfBiopsies');
-    const hyperplasiaSelect = this.container.querySelector('#hyperplasia');
+    // Biopsy/atypical hyperplasia consistency logic
+    const biopsiesInput = this.container.querySelector('#numBreastBiopsies');
+    const hyperplasiaSelect = this.container.querySelector('#atypicalHyperplasia');
 
     biopsiesInput.addEventListener('input', (e) => {
       const biopsies = parseInt(e.target.value);
@@ -2374,20 +2075,20 @@ export class RiskForm {
     const formData = new FormData(this.form);
     return {
       id: 1, // Can be generated or left as default
-      currentAge: parseFloat(formData.get('currentAge')),
-      projectionAge: parseFloat(formData.get('projectionAge')),
+      initialAge: parseFloat(formData.get('initialAge')),
+      projectionEndAge: parseFloat(formData.get('projectionEndAge')),
       race: parseInt(formData.get('race')),
-      numberOfBiopsies: parseInt(formData.get('numberOfBiopsies')),
+      numBreastBiopsies: parseInt(formData.get('numBreastBiopsies')),
       ageAtMenarche: parseInt(formData.get('ageAtMenarche')),
       ageAtFirstBirth: parseInt(formData.get('ageAtFirstBirth')),
-      firstDegreeRelatives: parseInt(formData.get('firstDegreeRelatives')),
-      hyperplasia: parseInt(formData.get('hyperplasia')),
+      numRelativesWithBrCa: parseInt(formData.get('numRelativesWithBrCa')),
+      atypicalHyperplasia: parseInt(formData.get('atypicalHyperplasia')),
     };
   }
 
   reset() {
     this.form.reset();
-    this.container.querySelector('#hyperplasia').disabled = false;
+    this.container.querySelector('#atypicalHyperplasia').disabled = false;
   }
 }
 ```
@@ -3167,14 +2868,14 @@ import { calculateRisk, RaceCode } from 'bcra';
 
 const patient = {
   id: 1,
-  currentAge: 40,
-  projectionAge: 50,
+  initialAge: 40,
+  projectionEndAge: 50,
   race: RaceCode.WHITE,
-  numberOfBiopsies: 1,
+  numBreastBiopsies: 1,
   ageAtMenarche: 12,
   ageAtFirstBirth: 25,
-  firstDegreeRelatives: 1,
-  hyperplasia: 0,
+  numRelativesWithBrCa: 1,
+  atypicalHyperplasia: 0,
 };
 
 const result = calculateRisk(patient);
