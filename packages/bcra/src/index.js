@@ -26,15 +26,17 @@
  * @license GPL-3.0-or-later
  */
 
-// Core calculation functions (to be implemented in Phase 2-3)
+// Core calculation functions (Phase 3.1 - Complete)
+export { recodeAndValidate } from './core/recode-check.js';
+
+// Core calculation functions (to be implemented in Phase 3.2-3.5)
 // export { calculateRisk, calculateBatchRisk } from './core/risk-calculator.js';
-// export { recodeAndValidate } from './core/recode-check.js';
 // export { calculateRelativeRisk } from './core/relative-risk.js';
 // export { calculateAbsoluteRisk } from './core/absolute-risk.js';
 
-// Export types and constants for advanced users (to be implemented in Phase 2)
-// export * from './types/index.js';
-// export * as constants from './constants/index.js';
+// Export types and constants for advanced users (Phase 2 - Complete)
+export * from './types/index.js';
+export * as constants from './constants/index.js';
 
 // Export version
 export const VERSION = '1.0.0';
