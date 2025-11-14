@@ -1,44 +1,22 @@
 import { describe, it, expect } from 'vitest';
-import { recodeAndValidate } from '../../src/core/recode-check.js';
-import { calculateRelativeRisk } from '../../src/core/relative-risk.js';
-import { calculateAbsoluteRisk } from '../../src/core/absolute-risk.js';
+import {
+  calculateRisk,
+  calculateBatchRisk,
+} from '../../src/core/risk-calculator.js';
 import { RaceCode } from '../../src/types/index.js';
 
 /**
  * Integration tests for end-to-end breast cancer risk calculation
  *
- * These tests validate the complete workflow:
- * 1. recodeAndValidate - Input validation and recoding
- * 2. calculateRelativeRisk - Logistic regression
- * 3. calculateAbsoluteRisk - Numerical integration
+ * These tests validate the complete workflow through the main API:
+ * - calculateRisk() orchestrates: recodeAndValidate → calculateRelativeRisk → calculateAbsoluteRisk
+ * - calculateBatchRisk() processes multiple individuals
  */
 describe('End-to-end risk calculation', () => {
-  /**
-   * Helper function to calculate absolute risk for a patient
-   * @param {Object} patientData - Patient data
-   * @param {boolean} calculateAverage - Whether to calculate average risk
-   * @returns {{absoluteRisk: number, relativeRisk: Object, validation: Object}}
-   */
-  function calculateRisk(patientData, calculateAverage = false) {
-    const validation = recodeAndValidate(patientData);
-    const relativeRisk = calculateRelativeRisk(validation, patientData.race);
-    const absoluteRisk = calculateAbsoluteRisk(
-      patientData,
-      validation,
-      relativeRisk,
-      calculateAverage
-    );
 
-    return {
-      absoluteRisk,
-      relativeRisk,
-      validation,
-    };
-  }
-
-  describe('Typical patient profiles - White women', () => {
+  describe('Typical individual profiles - White women', () => {
     it('should calculate risk for average 45-year-old White woman (5-year risk)', () => {
-      const patient = {
+      const individual = {
         id: 1,
         initialAge: 45,
         projectionEndAge: 50,
@@ -50,19 +28,20 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 99,
       };
 
-      const result = calculateRisk(patient);
+      const result = calculateRisk(individual);
 
+      expect(result.success).toBe(true);
       expect(result.validation.isValid).toBe(true);
       expect(result.absoluteRisk).not.toBeNull();
       expect(result.absoluteRisk).toBeGreaterThan(0);
       expect(result.absoluteRisk).toBeLessThan(5);
       // ageAtMenarche=12 maps to category 1 (12-13), so RR > 1.0
-      expect(result.relativeRisk.relativeRiskUnder50).toBeGreaterThan(1.0);
-      expect(result.relativeRisk.patternNumber).toBeGreaterThan(0);
+      expect(result.relativeRiskUnder50).toBeGreaterThan(1.0);
+      expect(result.patternNumber).toBeGreaterThan(0);
     });
 
     it('should calculate risk for high-risk 45-year-old White woman', () => {
-      const patient = {
+      const individual = {
         id: 2,
         initialAge: 45,
         projectionEndAge: 50,
@@ -74,17 +53,18 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 1, // Hyperplasia present
       };
 
-      const result = calculateRisk(patient);
+      const result = calculateRisk(individual);
 
+      expect(result.success).toBe(true);
       expect(result.validation.isValid).toBe(true);
       expect(result.absoluteRisk).not.toBeNull();
       expect(result.absoluteRisk).toBeGreaterThan(0);
-      // High-risk patient should have significantly elevated risk
-      expect(result.relativeRisk.relativeRiskUnder50).toBeGreaterThan(5);
+      // High-risk individual should have significantly elevated risk
+      expect(result.relativeRiskUnder50).toBeGreaterThan(5);
     });
 
     it('should calculate lifetime risk for White woman (age 35 to 90)', () => {
-      const patient = {
+      const individual = {
         id: 3,
         initialAge: 35,
         projectionEndAge: 90,
@@ -96,8 +76,9 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 99,
       };
 
-      const result = calculateRisk(patient);
+      const result = calculateRisk(individual);
 
+      expect(result.success).toBe(true);
       expect(result.validation.isValid).toBe(true);
       expect(result.absoluteRisk).not.toBeNull();
       expect(result.absoluteRisk).toBeGreaterThan(5); // Lifetime risk should be substantial
@@ -105,7 +86,7 @@ describe('End-to-end risk calculation', () => {
     });
 
     it('should calculate risk for nulliparous White woman', () => {
-      const patient = {
+      const individual = {
         id: 4,
         initialAge: 45,
         projectionEndAge: 50,
@@ -117,18 +98,19 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 99,
       };
 
-      const result = calculateRisk(patient);
+      const result = calculateRisk(individual);
 
+      expect(result.success).toBe(true);
       expect(result.validation.isValid).toBe(true);
-      expect(result.validation.recodedValues.firstBirthCategory).toBe(2);
+      expect(result.recodedValues.firstBirthCategory).toBe(2);
       expect(result.absoluteRisk).not.toBeNull();
       expect(result.absoluteRisk).toBeGreaterThan(0);
     });
   });
 
-  describe('Typical patient profiles - African-American women', () => {
+  describe('Typical individual profiles - African-American women', () => {
     it('should calculate risk for average 45-year-old African-American woman', () => {
-      const patient = {
+      const individual = {
         id: 5,
         initialAge: 45,
         projectionEndAge: 50,
@@ -140,17 +122,18 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 99,
       };
 
-      const result = calculateRisk(patient);
+      const result = calculateRisk(individual);
 
+      expect(result.success).toBe(true);
       expect(result.validation.isValid).toBe(true);
-      expect(result.validation.recodedValues.firstBirthCategory).toBe(0); // AA model sets to 0
+      expect(result.recodedValues.firstBirthCategory).toBe(0); // AA model sets to 0
       expect(result.absoluteRisk).not.toBeNull();
       expect(result.absoluteRisk).toBeGreaterThan(0);
       expect(result.absoluteRisk).toBeLessThan(5);
     });
 
     it('should calculate risk for African-American woman with family history', () => {
-      const patient = {
+      const individual = {
         id: 6,
         initialAge: 45,
         projectionEndAge: 50,
@@ -162,17 +145,18 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 0,
       };
 
-      const result = calculateRisk(patient);
+      const result = calculateRisk(individual);
 
+      expect(result.success).toBe(true);
       expect(result.validation.isValid).toBe(true);
       expect(result.absoluteRisk).not.toBeNull();
-      expect(result.relativeRisk.relativeRiskUnder50).toBeGreaterThan(1.5);
+      expect(result.relativeRiskUnder50).toBeGreaterThan(1.5);
     });
   });
 
-  describe('Typical patient profiles - Hispanic women', () => {
+  describe('Typical individual profiles - Hispanic women', () => {
     it('should calculate risk for Hispanic US-Born woman', () => {
-      const patient = {
+      const individual = {
         id: 7,
         initialAge: 45,
         projectionEndAge: 50,
@@ -184,16 +168,17 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 99,
       };
 
-      const result = calculateRisk(patient);
+      const result = calculateRisk(individual);
 
+      expect(result.success).toBe(true);
       expect(result.validation.isValid).toBe(true);
-      expect(result.validation.recodedValues.menarcheCategory).toBe(0); // HU model sets to 0
+      expect(result.recodedValues.menarcheCategory).toBe(0); // HU model sets to 0
       expect(result.absoluteRisk).not.toBeNull();
       expect(result.absoluteRisk).toBeGreaterThan(0);
     });
 
     it('should calculate risk for Hispanic Foreign-Born woman', () => {
-      const patient = {
+      const individual = {
         id: 8,
         initialAge: 45,
         projectionEndAge: 50,
@@ -205,17 +190,18 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 99,
       };
 
-      const result = calculateRisk(patient);
+      const result = calculateRisk(individual);
 
+      expect(result.success).toBe(true);
       expect(result.validation.isValid).toBe(true);
       expect(result.absoluteRisk).not.toBeNull();
       expect(result.absoluteRisk).toBeGreaterThan(0);
     });
   });
 
-  describe('Typical patient profiles - Asian women', () => {
+  describe('Typical individual profiles - Asian women', () => {
     it('should calculate risk for Chinese-American woman', () => {
-      const patient = {
+      const individual = {
         id: 9,
         initialAge: 45,
         projectionEndAge: 50,
@@ -227,15 +213,16 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 99,
       };
 
-      const result = calculateRisk(patient);
+      const result = calculateRisk(individual);
 
+      expect(result.success).toBe(true);
       expect(result.validation.isValid).toBe(true);
       expect(result.absoluteRisk).not.toBeNull();
       expect(result.absoluteRisk).toBeGreaterThan(0);
     });
 
     it('should calculate risk for Japanese-American woman', () => {
-      const patient = {
+      const individual = {
         id: 10,
         initialAge: 45,
         projectionEndAge: 50,
@@ -247,15 +234,16 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 99,
       };
 
-      const result = calculateRisk(patient);
+      const result = calculateRisk(individual);
 
+      expect(result.success).toBe(true);
       expect(result.validation.isValid).toBe(true);
       expect(result.absoluteRisk).not.toBeNull();
       expect(result.absoluteRisk).toBeGreaterThan(0);
     });
 
     it('should calculate risk for Filipino-American woman', () => {
-      const patient = {
+      const individual = {
         id: 11,
         initialAge: 45,
         projectionEndAge: 50,
@@ -267,8 +255,9 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 99,
       };
 
-      const result = calculateRisk(patient);
+      const result = calculateRisk(individual);
 
+      expect(result.success).toBe(true);
       expect(result.validation.isValid).toBe(true);
       expect(result.absoluteRisk).not.toBeNull();
       expect(result.absoluteRisk).toBeGreaterThan(0);
@@ -277,7 +266,7 @@ describe('End-to-end risk calculation', () => {
 
   describe('Native American/Other', () => {
     it('should calculate risk for Native American woman using White model', () => {
-      const patient = {
+      const individual = {
         id: 12,
         initialAge: 45,
         projectionEndAge: 50,
@@ -289,8 +278,9 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 99,
       };
 
-      const result = calculateRisk(patient);
+      const result = calculateRisk(individual);
 
+      expect(result.success).toBe(true);
       expect(result.validation.isValid).toBe(true);
       expect(result.absoluteRisk).not.toBeNull();
       expect(result.absoluteRisk).toBeGreaterThan(0);
@@ -299,7 +289,7 @@ describe('End-to-end risk calculation', () => {
 
   describe('Different age ranges', () => {
     it('should calculate risk for younger woman (age 25 to 30)', () => {
-      const patient = {
+      const individual = {
         id: 13,
         initialAge: 25,
         projectionEndAge: 30,
@@ -311,8 +301,9 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 99,
       };
 
-      const result = calculateRisk(patient);
+      const result = calculateRisk(individual);
 
+      expect(result.success).toBe(true);
       expect(result.validation.isValid).toBe(true);
       expect(result.absoluteRisk).not.toBeNull();
       expect(result.absoluteRisk).toBeGreaterThan(0);
@@ -320,7 +311,7 @@ describe('End-to-end risk calculation', () => {
     });
 
     it('should calculate risk for older woman (age 60 to 70)', () => {
-      const patient = {
+      const individual = {
         id: 14,
         initialAge: 60,
         projectionEndAge: 70,
@@ -332,15 +323,16 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 99,
       };
 
-      const result = calculateRisk(patient);
+      const result = calculateRisk(individual);
 
+      expect(result.success).toBe(true);
       expect(result.validation.isValid).toBe(true);
       expect(result.absoluteRisk).not.toBeNull();
       expect(result.absoluteRisk).toBeGreaterThan(0);
     });
 
     it('should calculate risk for woman near maximum age (age 85 to 90)', () => {
-      const patient = {
+      const individual = {
         id: 15,
         initialAge: 85,
         projectionEndAge: 90,
@@ -352,8 +344,9 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 99,
       };
 
-      const result = calculateRisk(patient);
+      const result = calculateRisk(individual);
 
+      expect(result.success).toBe(true);
       expect(result.validation.isValid).toBe(true);
       expect(result.absoluteRisk).not.toBeNull();
       expect(result.absoluteRisk).toBeGreaterThan(0);
@@ -362,7 +355,7 @@ describe('End-to-end risk calculation', () => {
 
   describe('Risk comparison - validating relative risk impact', () => {
     it('should show higher risk with increasing family history', () => {
-      const basePatient = {
+      const baseIndividual = {
         initialAge: 45,
         projectionEndAge: 50,
         race: RaceCode.WHITE,
@@ -373,19 +366,19 @@ describe('End-to-end risk calculation', () => {
       };
 
       const noFamily = calculateRisk({
-        ...basePatient,
+        ...baseIndividual,
         id: 16,
         numRelativesWithBrCa: 0,
       });
 
       const oneRelative = calculateRisk({
-        ...basePatient,
+        ...baseIndividual,
         id: 17,
         numRelativesWithBrCa: 1,
       });
 
       const twoRelatives = calculateRisk({
-        ...basePatient,
+        ...baseIndividual,
         id: 18,
         numRelativesWithBrCa: 2,
       });
@@ -397,7 +390,7 @@ describe('End-to-end risk calculation', () => {
     });
 
     it('should show higher risk with biopsies and hyperplasia', () => {
-      const basePatient = {
+      const baseIndividual = {
         initialAge: 45,
         projectionEndAge: 50,
         race: RaceCode.WHITE,
@@ -407,21 +400,21 @@ describe('End-to-end risk calculation', () => {
       };
 
       const noBiopsies = calculateRisk({
-        ...basePatient,
+        ...baseIndividual,
         id: 19,
         numBreastBiopsies: 0,
         atypicalHyperplasia: 99,
       });
 
       const withBiopsies = calculateRisk({
-        ...basePatient,
+        ...baseIndividual,
         id: 20,
         numBreastBiopsies: 1,
         atypicalHyperplasia: 0, // No hyperplasia
       });
 
       const withHyperplasia = calculateRisk({
-        ...basePatient,
+        ...baseIndividual,
         id: 21,
         numBreastBiopsies: 1,
         atypicalHyperplasia: 1, // Hyperplasia present
@@ -436,7 +429,7 @@ describe('End-to-end risk calculation', () => {
 
   describe('Average risk calculation', () => {
     it('should calculate average risk lower than individual high-risk', () => {
-      const highRiskPatient = {
+      const highRiskIndividual = {
         id: 22,
         initialAge: 45,
         projectionEndAge: 50,
@@ -448,16 +441,23 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 1,
       };
 
-      const individualRisk = calculateRisk(highRiskPatient, false);
-      const averageRisk = calculateRisk(highRiskPatient, true);
+      const individualRisk = calculateRisk(highRiskIndividual, {
+        calculateAverage: false,
+      });
+      const averageRisk = calculateRisk(highRiskIndividual, {
+        calculateAverage: true,
+      });
 
+      expect(individualRisk.success).toBe(true);
+      expect(averageRisk.success).toBe(true);
       expect(individualRisk.absoluteRisk).toBeGreaterThan(
-        averageRisk.absoluteRisk
+        averageRisk.averageRisk
       );
+      expect(averageRisk.averageRisk).not.toBeNull();
     });
 
     it('should calculate average risk higher than individual low-risk', () => {
-      const lowRiskPatient = {
+      const lowRiskIndividual = {
         id: 23,
         initialAge: 45,
         projectionEndAge: 50,
@@ -469,18 +469,47 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 99,
       };
 
-      const individualRisk = calculateRisk(lowRiskPatient, false);
-      const averageRisk = calculateRisk(lowRiskPatient, true);
+      const individualRisk = calculateRisk(lowRiskIndividual, {
+        calculateAverage: false,
+      });
+      const averageRisk = calculateRisk(lowRiskIndividual, {
+        calculateAverage: true,
+      });
 
-      expect(averageRisk.absoluteRisk).toBeGreaterThan(
+      expect(individualRisk.success).toBe(true);
+      expect(averageRisk.success).toBe(true);
+      expect(averageRisk.averageRisk).toBeGreaterThan(
         individualRisk.absoluteRisk
       );
+      expect(averageRisk.averageRisk).not.toBeNull();
+    });
+
+    it('should include both individual and average risk when calculateAverage is true', () => {
+      const individual = {
+        id: 27,
+        initialAge: 45,
+        projectionEndAge: 50,
+        race: RaceCode.WHITE,
+        numBreastBiopsies: 1,
+        ageAtMenarche: 12,
+        ageAtFirstBirth: 25,
+        numRelativesWithBrCa: 1,
+        atypicalHyperplasia: 0,
+      };
+
+      const result = calculateRisk(individual, { calculateAverage: true });
+
+      expect(result.success).toBe(true);
+      expect(result.absoluteRisk).not.toBeNull();
+      expect(result.averageRisk).not.toBeNull();
+      expect(result.absoluteRisk).toBeGreaterThan(0);
+      expect(result.averageRisk).toBeGreaterThan(0);
     });
   });
 
   describe('Error handling', () => {
     it('should handle invalid age range gracefully', () => {
-      const patient = {
+      const individual = {
         id: 24,
         initialAge: 50,
         projectionEndAge: 45, // Invalid: end < start
@@ -492,14 +521,16 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 99,
       };
 
-      const result = calculateRisk(patient);
+      const result = calculateRisk(individual);
 
+      expect(result.success).toBe(false);
       expect(result.validation.isValid).toBe(false);
+      expect(result.validation.errors.length).toBeGreaterThan(0);
       expect(result.absoluteRisk).toBeNull();
     });
 
     it('should handle invalid race code gracefully', () => {
-      const patient = {
+      const individual = {
         id: 25,
         initialAge: 45,
         projectionEndAge: 50,
@@ -511,14 +542,16 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 99,
       };
 
-      const result = calculateRisk(patient);
+      const result = calculateRisk(individual);
 
+      expect(result.success).toBe(false);
       expect(result.validation.isValid).toBe(false);
+      expect(result.validation.errors.length).toBeGreaterThan(0);
       expect(result.absoluteRisk).toBeNull();
     });
 
     it('should handle inconsistent biopsy/hyperplasia data', () => {
-      const patient = {
+      const individual = {
         id: 26,
         initialAge: 45,
         projectionEndAge: 50,
@@ -530,10 +563,104 @@ describe('End-to-end risk calculation', () => {
         atypicalHyperplasia: 1, // But hyperplasia present - inconsistent!
       };
 
-      const result = calculateRisk(patient);
+      const result = calculateRisk(individual);
 
+      expect(result.success).toBe(false);
       expect(result.validation.isValid).toBe(false);
+      expect(result.validation.errors.length).toBeGreaterThan(0);
       expect(result.absoluteRisk).toBeNull();
+    });
+  });
+
+  describe('Batch processing', () => {
+    it('should process multiple individuals correctly', () => {
+      const individuals = [
+        {
+          id: 28,
+          initialAge: 45,
+          projectionEndAge: 50,
+          race: RaceCode.WHITE,
+          numBreastBiopsies: 0,
+          ageAtMenarche: 12,
+          ageAtFirstBirth: 25,
+          numRelativesWithBrCa: 0,
+          atypicalHyperplasia: 99,
+        },
+        {
+          id: 29,
+          initialAge: 45,
+          projectionEndAge: 50,
+          race: RaceCode.AFRICAN_AMERICAN,
+          numBreastBiopsies: 1,
+          ageAtMenarche: 11,
+          ageAtFirstBirth: 25,
+          numRelativesWithBrCa: 1,
+          atypicalHyperplasia: 0,
+        },
+        {
+          id: 30,
+          initialAge: 35,
+          projectionEndAge: 90,
+          race: RaceCode.HISPANIC_US_BORN,
+          numBreastBiopsies: 0,
+          ageAtMenarche: 12,
+          ageAtFirstBirth: 25,
+          numRelativesWithBrCa: 0,
+          atypicalHyperplasia: 99,
+        },
+      ];
+
+      const results = calculateBatchRisk(individuals);
+
+      expect(results).toBeInstanceOf(Array);
+      expect(results.length).toBe(3);
+
+      // All calculations should succeed
+      results.forEach((result) => {
+        expect(result.success).toBe(true);
+        expect(result.absoluteRisk).not.toBeNull();
+        expect(result.absoluteRisk).toBeGreaterThan(0);
+      });
+
+      // Each result should have correct race
+      expect(results[0].raceEthnicity).toContain('White');
+      expect(results[1].raceEthnicity).toContain('African');
+      expect(results[2].raceEthnicity).toContain('Hispanic');
+    });
+
+    it('should handle batch with some invalid individuals', () => {
+      const individuals = [
+        {
+          id: 31,
+          initialAge: 45,
+          projectionEndAge: 50,
+          race: RaceCode.WHITE,
+          numBreastBiopsies: 0,
+          ageAtMenarche: 12,
+          ageAtFirstBirth: 25,
+          numRelativesWithBrCa: 0,
+          atypicalHyperplasia: 99,
+        },
+        {
+          id: 32,
+          initialAge: 50,
+          projectionEndAge: 45, // Invalid
+          race: RaceCode.WHITE,
+          numBreastBiopsies: 0,
+          ageAtMenarche: 12,
+          ageAtFirstBirth: 25,
+          numRelativesWithBrCa: 0,
+          atypicalHyperplasia: 99,
+        },
+      ];
+
+      const results = calculateBatchRisk(individuals);
+
+      expect(results.length).toBe(2);
+      expect(results[0].success).toBe(true);
+      expect(results[0].absoluteRisk).not.toBeNull();
+      expect(results[1].success).toBe(false);
+      expect(results[1].absoluteRisk).toBeNull();
     });
   });
 });

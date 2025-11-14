@@ -35,8 +35,8 @@ export { calculateRelativeRisk } from './core/relative-risk.js';
 // Core calculation functions (Phase 3.3 - Complete)
 export { calculateAbsoluteRisk, expandToSingleYears } from './core/absolute-risk.js';
 
-// Core calculation functions (to be implemented in Phase 3.4-3.5)
-// export { calculateRisk, calculateBatchRisk } from './core/risk-calculator.js';
+// Core calculation functions (Phase 3.4-3.5 - Complete)
+export { calculateRisk, calculateBatchRisk } from './core/risk-calculator.js';
 
 // Export types and constants for advanced users (Phase 2 - Complete)
 export * from './types/index.js';
@@ -45,7 +45,12 @@ export * as constants from './constants/index.js';
 // Export version
 export const VERSION = '1.0.0';
 
-// Placeholder export
+// Import main functions for default export
+import { calculateRisk, calculateBatchRisk } from './core/risk-calculator.js';
+
+// Default export with main API
 export default {
+  calculateRisk,
+  calculateBatchRisk,
   VERSION,
 };
