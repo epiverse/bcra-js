@@ -96,8 +96,8 @@ export const ASIAN_1_AR = [
  *
  * @example
  * import { ATTRIBUTABLE_RISK_BY_RACE } from './constants/attributable-risk.js';
- * const ar = ATTRIBUTABLE_RISK_BY_RACE[patientData.race];
- * const oneMinusAR = patientData.initialAge < 50 ? ar[0] : ar[1];
+ * const ar = ATTRIBUTABLE_RISK_BY_RACE[data.race];
+ * const oneMinusAR = data.initialAge < 50 ? ar[0] : ar[1];
  */
 export const ATTRIBUTABLE_RISK_BY_RACE = {
   1: WHITE_1_AR, // Non-Hispanic White

@@ -60,12 +60,12 @@ After validation, raw values are transformed into categorical variables. The R p
 ## Function Parameter Mapping
 
 ### R: `absolute.risk(data, Raw_Ind=1, Avg_White=0)`
-**JavaScript:** `calculateRisk(patientData, options = {})`
+**JavaScript:** `calculateRisk(data, options = {})`
 
-| R Parameter | JavaScript Parameter | Default | Description |
-|-------------|---------------------|---------|-------------|
-| `data` | `patientData` | Required | Input data object/data frame |
-| `Raw_Ind` | `options.rawInput` | `true` | Whether input is in raw format (1=true, 0=false) |
+| R Parameter | JavaScript Parameter       | Default | Description |
+|-------------|----------------------------|---------|-------------|
+| `data` | `data`                     | Required | Input data object/data frame |
+| `Raw_Ind` | `options.rawInput`         | `true` | Whether input is in raw format (1=true, 0=false) |
 | `Avg_White` | `options.calculateAverage` | `false` | Calculate average risk (1=true, 0=false) |
 
 ### R: `recode.check(data, Raw_Ind=1)`

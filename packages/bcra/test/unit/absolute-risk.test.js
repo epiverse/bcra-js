@@ -468,7 +468,7 @@ describe('calculateAbsoluteRisk', () => {
       const validation = recodeAndValidate(data);
       const relativeRisk = calculateRelativeRisk(validation, data.race);
 
-      // Individual risk should be higher than average risk for high-risk patient
+      // Individual risk should be higher than average risk for a high-risk individual
       const individualRisk = calculateAbsoluteRisk(
         data,
         validation,

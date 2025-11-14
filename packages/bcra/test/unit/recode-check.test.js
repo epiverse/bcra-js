@@ -855,7 +855,7 @@ describe('recodeAndValidate', () => {
   });
 
   describe('Integration tests', () => {
-    it('should handle complete valid White patient', () => {
+    it('should handle complete valid White individual data', () => {
       const data = {
         initialAge: 45,
         projectionEndAge: 55,
@@ -878,7 +878,7 @@ describe('recodeAndValidate', () => {
       expect(result.recodedValues.hyperplasiaMultiplier).toBe(0.93);
     });
 
-    it('should handle complete valid African-American patient', () => {
+    it('should handle complete valid African-American individual data', () => {
       const data = {
         initialAge: 35,
         projectionEndAge: 40,
@@ -896,7 +896,7 @@ describe('recodeAndValidate', () => {
       expect(result.recodedValues.firstBirthCategory).toBe(0); // Always 0 for AA
     });
 
-    it('should handle complete valid Hispanic US-Born patient', () => {
+    it('should handle complete valid Hispanic US-Born individual data', () => {
       const data = {
         initialAge: 50,
         projectionEndAge: 60,
@@ -916,7 +916,7 @@ describe('recodeAndValidate', () => {
       expect(result.recodedValues.relativesCategory).toBe(1); // Collapsed from 2
     });
 
-    it('should handle complete valid Asian patient', () => {
+    it('should handle complete valid Asian individual data', () => {
       const data = {
         initialAge: 40,
         projectionEndAge: 50,
@@ -951,7 +951,7 @@ describe('recodeAndValidate', () => {
       expect(result.errors.length).toBeGreaterThan(1);
     });
 
-    it('should handle nulliparous patient correctly', () => {
+    it('should handle nulliparous individual correctly', () => {
       const data = {
         initialAge: 30,
         projectionEndAge: 35,

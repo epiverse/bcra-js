@@ -146,7 +146,7 @@ export const OTHER_BETA = WHITE_BETA;
  *
  * @example
  * import { BETA_BY_RACE } from './constants/beta.js';
- * const beta = BETA_BY_RACE[patientData.race];
+ * const beta = BETA_BY_RACE[data.race];
  */
 export const BETA_BY_RACE = {
   1: WHITE_BETA, // Non-Hispanic White

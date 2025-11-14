@@ -25,7 +25,7 @@ Or use via CDN:
 ```javascript
 import { calculateRisk } from 'bcra';
 
-const riskFactorProfile = {
+const data = {
   id: 1,
   initialAge: 40,
   projectionEndAge: 50,
@@ -37,7 +37,7 @@ const riskFactorProfile = {
   atypicalHyperplasia: 0,
 };
 
-const result = calculateRisk(riskFactorProfile);
+const result = calculateRisk(data);
 
 console.log(`Absolute Risk: ${result.absoluteRisk.toFixed(2)}%`);
 console.log(
@@ -48,13 +48,13 @@ console.log(`Relative Risk (age ≥50): ${result.relativeRiskAtOrAbove50.toFixed
 
 ## API Documentation
 
-### `calculateRisk(riskFactorProfile, options)`
+### `calculateRisk(data, options)`
 
 Calculates breast cancer risk for one individual.
 
 **Parameters:**
 
-- `riskFactorProfile` (Object): Risk factor profile of an individual
+- `data` (Object): Risk factor profile of an individual
   - `id` (number): Individual's unique ID. Positive integer: 1, 2, 3,... .
   - `initialAge` (number): Initial age. Real number in [20, 90).
   - `projectionEndAge` (number): Risk projection end age, starting at `initialAge`. Real number in (20, 90], such that `initialAge` < `projectionEndAge`.

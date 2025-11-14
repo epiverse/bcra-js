@@ -88,7 +88,7 @@ export function expandToSingleYears(ratesByGroup) {
  * - Different RR values for ages < 50 and >= 50
  * - Average risk calculation mode
  *
- * @param {import('../types/index.js').RiskFactorProfile} data - Patient data including ages and race
+ * @param {import('../types/index.js').RiskFactorProfile} data - Individual's risk factor data including ages and race
  * @param {import('../types/index.js').ValidationResult} validation - Validated and recoded data
  * @param {{relativeRiskUnder50: number, relativeRiskAtOrAbove50: number, patternNumber: number}} relativeRisk - Relative risk values
  * @param {boolean} [calculateAverage=false] - If true, calculate average risk instead of individual risk

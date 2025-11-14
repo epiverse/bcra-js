@@ -279,7 +279,7 @@ export const OTHER_ASIAN_LAMBDA2 = [
  *
  * @example
  * import { LAMBDA2_BY_RACE } from './constants/lambda2.js';
- * const lambda2 = LAMBDA2_BY_RACE[patientData.race];
+ * const lambda2 = LAMBDA2_BY_RACE[data.race];
  */
 export const LAMBDA2_BY_RACE = {
   1: WHITE_LAMBDA2, // Non-Hispanic White

@@ -278,7 +278,7 @@ export const OTHER_ASIAN_LAMBDA1 = [
  *
  * @example
  * import { LAMBDA1_BY_RACE } from './constants/lambda1.js';
- * const lambda1 = LAMBDA1_BY_RACE[patientData.race];
+ * const lambda1 = LAMBDA1_BY_RACE[data.race];
  */
 export const LAMBDA1_BY_RACE = {
   1: WHITE_LAMBDA1, // Non-Hispanic White

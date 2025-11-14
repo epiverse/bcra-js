@@ -60,8 +60,8 @@ import { BETA_BY_RACE } from '../constants/index.js';
  * @returns {{relativeRiskUnder50: number|null, relativeRiskAtOrAbove50: number|null, patternNumber: number|null}}
  *
  * @example
- * // Calculate relative risk for a validated patient
- * const validation = recodeAndValidate(patientData);
+ * // Calculate relative risk for validated risk factor data
+ * const validation = recodeAndValidate(data);
  * const relativeRisk = calculateRelativeRisk(validation, RaceCode.WHITE);
  * console.log(relativeRisk.relativeRiskUnder50); // e.g., 2.45
  * console.log(relativeRisk.relativeRiskAtOrAbove50); // e.g., 1.87

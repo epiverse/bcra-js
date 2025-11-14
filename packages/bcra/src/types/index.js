@@ -40,8 +40,8 @@
  * @property {number} atypicalHyperplasia - Presence of atypical hyperplasia on any biopsy. 0 (no), 1 (yes), or 99 (unknown/not applicable if no biopsies).
  *
  * @example
- * // Example patient data for a 45-year-old woman
- * const patient = {
+ * // Example risk factor data for a 45-year-old woman
+ * const data = {
  *   id: 1,
  *   initialAge: 45.2,
  *   projectionEndAge: 55.0,
@@ -54,8 +54,8 @@
  * };
  *
  * @example
- * // Example with unknown values
- * const patientWithUnknowns = {
+ * // Example risk factor data with unknown values
+ * const dataWithUnknowns = {
  *   id: 2,
  *   initialAge: 35,
  *   projectionEndAge: 40,

@@ -2,7 +2,7 @@ import { SpecialValues, RaceCode, RaceLabels } from '../types/index.js';
 
 /**
  * Validates and recodes input data for breast cancer risk assessment
- * @param {import('../types/index.js').RiskFactorProfile} data - Raw patient data
+ * @param {import('../types/index.js').RiskFactorProfile} data - Raw risk factor data
  * @param {boolean} rawInput - Whether inputs are in raw format (default: true)
  * @returns {import('../types/index.js').ValidationResult}
  */
