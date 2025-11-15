@@ -33,6 +33,10 @@ import { recodeAndValidate } from './recode-check.js';
 import { calculateRelativeRisk } from './relative-risk.js';
 import { calculateAbsoluteRisk } from './absolute-risk.js';
 import { RaceLabels } from '../types/index.js';
+import {
+  validateRiskFactorDataStructure,
+  sanitizeRiskFactorData,
+} from '../utils/validators.js';
 
 /**
  * Calculates breast cancer risk for an individual using the BCRAT (Gail Model)
@@ -103,8 +107,27 @@ export function calculateRisk(data, options = {}) {
   };
 
   try {
-    // Step 1: Validate and recode input data
-    const validation = recodeAndValidate(data, rawInput);
+    // Step 0: Pre-flight validation and sanitization (Phase 4)
+    // Sanitize input data if it's raw (convert strings to numbers for form inputs)
+    let sanitizedData = data;
+    if (rawInput) {
+      sanitizedData = sanitizeRiskFactorData(data);
+    }
+
+    // Validate data structure and types before domain validation
+    const structureValidation = validateRiskFactorDataStructure(sanitizedData);
+    if (!structureValidation.valid) {
+      // Pre-flight validation failed - return early with structural errors
+      result.validation = {
+        isValid: false,
+        errors: structureValidation.errors,
+        warnings: [],
+      };
+      return result;
+    }
+
+    // Step 1: Validate and recode input data (domain validation)
+    const validation = recodeAndValidate(sanitizedData, rawInput);
 
     // Store validation result
     result.validation = validation;
@@ -117,8 +140,8 @@ export function calculateRisk(data, options = {}) {
     // Store recoded values
     result.recodedValues = validation.recodedValues;
 
-    // Extract race and ages for metadata
-    const { race, initialAge, projectionEndAge } = data;
+    // Extract race and ages for metadata (use sanitized data)
+    const { race, initialAge, projectionEndAge } = sanitizedData;
     result.raceEthnicity = RaceLabels[race] || null;
     result.projectionInterval = projectionEndAge - initialAge;
 
@@ -144,7 +167,7 @@ export function calculateRisk(data, options = {}) {
 
     // Step 3: Calculate individualized absolute risk using numerical integration
     const individualizedAbsoluteRisk = calculateAbsoluteRisk(
-      data,
+      sanitizedData,
       validation,
       relativeRisk,
       false // Individual risk, not average
@@ -165,7 +188,7 @@ export function calculateRisk(data, options = {}) {
     if (calculateAverage) {
       // Store average risk (can be null if not supported for this race)
       result.averageRisk = calculateAbsoluteRisk(
-        data,
+        sanitizedData,
         validation,
         relativeRisk,
         true // Average risk

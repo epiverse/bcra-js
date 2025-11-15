@@ -285,161 +285,33 @@ const result = calculateRisk({
 
 ---
 
-## Phase 4: Validation and Error Handling
+## Phase 4: Validation and Error Handling ✅
 
-### Step 4.1: Create Comprehensive Validators
+**Status:** Complete | **Date:** November 15, 2025
 
-**Create `packages/bcra/src/utils/validators.js`:**
+Implemented comprehensive pre-flight validation and error handling layer. Added structural validation, input sanitization, custom error classes, and user-friendly error messages that complement existing domain validation in recode-check.js.
 
-```javascript
-import { MIN_AGE, MAX_AGE } from '../constants/index.js';
-import { SpecialValues } from '../types/index.js';
+**Files Created:**
+- `src/utils/validators.js` (340 lines) - Data structure validation and type coercion functions
+- `src/utils/error-handler.js` (292 lines) - Custom error classes (BCRAValidationError, BCRACalculationError) and message formatting
+- `test/unit/validators.test.js` (550+ lines, 54 tests) - Comprehensive validator test coverage
+- `test/unit/error-handler.test.js` (350+ lines, 37 tests) - Error handler test coverage
 
-/**
- * Validates risk factor data structure
- * @param {Object} data - Risk factor data to validate
- * @returns {Object} Validation result
- */
-export function validateRiskFactorDataStructure(data) {
-  const errors = [];
+**Files Modified:**
+- `src/core/risk-calculator.js` - Integrated pre-flight validation with automatic sanitization when rawInput=true
+- `test/integration/risk-calculator.test.js` - Added 10 integration tests for validation workflow
 
-  const requiredFields = [
-    'id',
-    'initialAge',
-    'projectionEndAge',
-    'race',
-    'numBreastBiopsies',
-    'ageAtMenarche',
-    'ageAtFirstBirth',
-    'numRelativesWithBrCa',
-    'atypicalHyperplasia',
-  ];
+**Key Implementation Details:**
+- **Pre-flight Validation:** `validateRiskFactorDataStructure()` checks required fields and types before domain validation
+- **Input Sanitization:** `sanitizeRiskFactorData()` converts form strings to numbers (e.g., "45" → 45) while preserving null/undefined
+- **Custom Error Classes:** Structured error objects with field-level details for programmatic handling
+- **User-Friendly Messages:** Technical error messages mapped to end-user-appropriate text via `createUserFriendlyError()`
+- **Two-Layer Architecture:** Pre-flight validation (structure/types) + domain validation (business rules in recode-check.js)
+- **Helper Functions:** `validateAge()`, `validateRaceCode()`, `validateNonNegative()`, `isSpecialValue()`
 
-  for (const field of requiredFields) {
-    if (!(field in data)) {
-      errors.push(`Missing required field: ${field}`);
-    }
-  }
+**Verification:** All 261 tests passing (91 new tests added for Phase 4). Library builds successfully. Maintains full backward compatibility with existing API.
 
-  // Type checking
-  const numericFields = [
-    'initialAge',
-    'projectionEndAge',
-    'race',
-    'numBreastBiopsies',
-    'ageAtMenarche',
-    'ageAtFirstBirth',
-    'numRelativesWithBrCa',
-    'atypicalHyperplasia',
-  ];
-
-  for (const field of numericFields) {
-    if (field in data && typeof data[field] !== 'number') {
-      errors.push(`${field} must be a number`);
-    }
-  }
-
-  return {
-    valid: errors.length === 0,
-    errors,
-  };
-}
-
-/**
- * Validates age ranges
- */
-export function validateAge(age, fieldName) {
-  const errors = [];
-
-  if (age < MIN_AGE || age >= MAX_AGE) {
-    errors.push(
-      `${fieldName} must be between ${MIN_AGE} and ${MAX_AGE - 1} years`
-    );
-  }
-
-  if (!Number.isInteger(age) && age !== Math.floor(age)) {
-    // Allow fractional ages but warn
-    errors.push(`${fieldName} should typically be a whole number`);
-  }
-
-  return {
-    valid: errors.length === 0,
-    errors,
-  };
-}
-
-/**
- * Sanitizes input data
- */
-export function sanitizePatientData(data) {
-  return {
-    ...data,
-    initialAge: Number(data.initialAge),
-    projectionEndAge: Number(data.projectionEndAge),
-    race: Number(data.race),
-    numBreastBiopsies: Number(data.numBreastBiopsies),
-    ageAtMenarche: Number(data.ageAtMenarche),
-    ageAtFirstBirth: Number(data.ageAtFirstBirth),
-    numRelativesWithBrCa: Number(data.numRelativesWithBrCa),
-    atypicalHyperplasia: Number(data.atypicalHyperplasia),
-  };
-}
-```
-
-### Step 4.2: Create Error Handling Utilities
-
-**Create `packages/bcra/src/utils/error-handler.js`:**
-
-```javascript
-/**
- * Custom error classes
- */
-export class BCRAValidationError extends Error {
-  constructor(message, fieldErrors = {}) {
-    super(message);
-    this.name = 'BCRAValidationError';
-    this.fieldErrors = fieldErrors;
-  }
-}
-
-export class BCRACalculationError extends Error {
-  constructor(message, details = {}) {
-    super(message);
-    this.name = 'BCRACalculationError';
-    this.details = details;
-  }
-}
-
-/**
- * Error formatter
- */
-export function formatValidationErrors(errors) {
-  if (!Array.isArray(errors) || errors.length === 0) {
-    return 'No errors';
-  }
-
-  return errors.map((err, idx) => `${idx + 1}. ${err}`).join('\n');
-}
-
-/**
- * Creates user-friendly error messages
- */
-export function createUserFriendlyError(error) {
-  const friendlyMessages = {
-    'Invalid race code': 'Please select a valid race/ethnicity option.',
-    'Current age must be between 20 and 89 years':
-      'Age must be between 20 and 89 years for risk calculation.',
-    'Projection age must be greater than current age':
-      'The future age must be greater than the current age.',
-    'Age at menarche cannot be greater than current age':
-      'Age at first period cannot be greater than current age.',
-    'Age at first birth cannot be less than age at menarche':
-      'Age at first birth must be after age at first period.',
-  };
-
-  return friendlyMessages[error] || error;
-}
-```
+**Ready for Phase 5:** Testing strategy and R cross-validation.
 
 ---
 

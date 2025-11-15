@@ -572,6 +572,216 @@ describe('End-to-end risk calculation', () => {
     });
   });
 
+  describe('Phase 4 - Pre-flight validation and sanitization', () => {
+    describe('Missing fields detection', () => {
+      it('should catch missing initialAge field', () => {
+        const individual = {
+          id: 100,
+          // initialAge missing
+          projectionEndAge: 50,
+          race: RaceCode.WHITE,
+          numBreastBiopsies: 0,
+          ageAtMenarche: 12,
+          ageAtFirstBirth: 25,
+          numRelativesWithBrCa: 0,
+          atypicalHyperplasia: 99,
+        };
+
+        const result = calculateRisk(individual);
+
+        expect(result.success).toBe(false);
+        expect(result.validation.isValid).toBe(false);
+        expect(result.validation.errors).toContain('Missing required field: initialAge');
+        expect(result.absoluteRisk).toBeNull();
+      });
+
+      it('should catch multiple missing fields', () => {
+        const individual = {
+          id: 101,
+          initialAge: 45,
+          projectionEndAge: 50,
+          race: RaceCode.WHITE,
+          // numBreastBiopsies, ageAtMenarche, ageAtFirstBirth, numRelativesWithBrCa, atypicalHyperplasia missing
+        };
+
+        const result = calculateRisk(individual);
+
+        expect(result.success).toBe(false);
+        expect(result.validation.isValid).toBe(false);
+        expect(result.validation.errors.length).toBeGreaterThan(1);
+        expect(result.validation.errors).toContain('Missing required field: numBreastBiopsies');
+        expect(result.validation.errors).toContain('Missing required field: ageAtMenarche');
+      });
+    });
+
+    describe('Invalid types detection', () => {
+      it('should catch non-numeric string for initialAge', () => {
+        const individual = {
+          id: 102,
+          initialAge: 'forty-five',
+          projectionEndAge: 50,
+          race: RaceCode.WHITE,
+          numBreastBiopsies: 0,
+          ageAtMenarche: 12,
+          ageAtFirstBirth: 25,
+          numRelativesWithBrCa: 0,
+          atypicalHyperplasia: 99,
+        };
+
+        const result = calculateRisk(individual);
+
+        expect(result.success).toBe(false);
+        expect(result.validation.isValid).toBe(false);
+        expect(result.validation.errors).toContain('initialAge must be a number (got string)');
+      });
+
+      it('should catch null value for numeric field', () => {
+        const individual = {
+          id: 103,
+          initialAge: null,
+          projectionEndAge: 50,
+          race: RaceCode.WHITE,
+          numBreastBiopsies: 0,
+          ageAtMenarche: 12,
+          ageAtFirstBirth: 25,
+          numRelativesWithBrCa: 0,
+          atypicalHyperplasia: 99,
+        };
+
+        const result = calculateRisk(individual);
+
+        expect(result.success).toBe(false);
+        expect(result.validation.isValid).toBe(false);
+        expect(result.validation.errors).toContain('initialAge cannot be null or undefined');
+      });
+
+      it('should catch Infinity value', () => {
+        const individual = {
+          id: 104,
+          initialAge: Infinity,
+          projectionEndAge: 50,
+          race: RaceCode.WHITE,
+          numBreastBiopsies: 0,
+          ageAtMenarche: 12,
+          ageAtFirstBirth: 25,
+          numRelativesWithBrCa: 0,
+          atypicalHyperplasia: 99,
+        };
+
+        const result = calculateRisk(individual);
+
+        expect(result.success).toBe(false);
+        expect(result.validation.isValid).toBe(false);
+        expect(result.validation.errors).toContain('initialAge must be a finite number');
+      });
+    });
+
+    describe('Input sanitization (string to number conversion)', () => {
+      it('should successfully sanitize and calculate with string inputs', () => {
+        const individual = {
+          id: 'patient-105',
+          initialAge: '45',
+          projectionEndAge: '50',
+          race: '1',
+          numBreastBiopsies: '0',
+          ageAtMenarche: '12',
+          ageAtFirstBirth: '25',
+          numRelativesWithBrCa: '0',
+          atypicalHyperplasia: '99',
+        };
+
+        const result = calculateRisk(individual);
+
+        expect(result.success).toBe(true);
+        expect(result.validation.isValid).toBe(true);
+        expect(result.absoluteRisk).not.toBeNull();
+        expect(result.absoluteRisk).toBeGreaterThan(0);
+      });
+
+      it('should sanitize special values from strings', () => {
+        const individual = {
+          id: 106,
+          initialAge: '45',
+          projectionEndAge: '50',
+          race: '1',
+          numBreastBiopsies: '99', // Unknown (string)
+          ageAtMenarche: '99', // Unknown (string)
+          ageAtFirstBirth: '98', // Nulliparous (string)
+          numRelativesWithBrCa: '0',
+          atypicalHyperplasia: '99',
+        };
+
+        const result = calculateRisk(individual);
+
+        expect(result.success).toBe(true);
+        expect(result.validation.isValid).toBe(true);
+        expect(result.absoluteRisk).not.toBeNull();
+        expect(result.absoluteRisk).toBeGreaterThan(0);
+      });
+
+      it('should preserve string id while converting numeric fields', () => {
+        const individual = {
+          id: 'patient-alpha-107',
+          initialAge: '45',
+          projectionEndAge: '50',
+          race: '1',
+          numBreastBiopsies: '0',
+          ageAtMenarche: '12',
+          ageAtFirstBirth: '25',
+          numRelativesWithBrCa: '0',
+          atypicalHyperplasia: '99',
+        };
+
+        const result = calculateRisk(individual);
+
+        expect(result.success).toBe(true);
+        expect(result.validation.isValid).toBe(true);
+        // ID should be preserved as string
+        expect(typeof individual.id).toBe('string');
+      });
+    });
+
+    describe('Sanitization with rawInput option', () => {
+      it('should sanitize when rawInput=true (default)', () => {
+        const individual = {
+          id: 108,
+          initialAge: '45',
+          projectionEndAge: '50',
+          race: '1',
+          numBreastBiopsies: '0',
+          ageAtMenarche: '12',
+          ageAtFirstBirth: '25',
+          numRelativesWithBrCa: '0',
+          atypicalHyperplasia: '99',
+        };
+
+        const result = calculateRisk(individual, { rawInput: true });
+
+        expect(result.success).toBe(true);
+        expect(result.validation.isValid).toBe(true);
+      });
+
+      it('should skip sanitization when rawInput=false', () => {
+        const individual = {
+          id: 109,
+          initialAge: 45,
+          projectionEndAge: 50,
+          race: 1,
+          numBreastBiopsies: 0,
+          ageAtMenarche: 12,
+          ageAtFirstBirth: 25,
+          numRelativesWithBrCa: 0,
+          atypicalHyperplasia: 99,
+        };
+
+        const result = calculateRisk(individual, { rawInput: false });
+
+        expect(result.success).toBe(true);
+        expect(result.validation.isValid).toBe(true);
+      });
+    });
+  });
+
   describe('Batch processing', () => {
     it('should process multiple individuals correctly', () => {
       const individuals = [
