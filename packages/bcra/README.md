@@ -1,7 +1,7 @@
 # BCRA - Breast Cancer Risk Assessment Tool
 
 [![NPM Version](https://img.shields.io/npm/v/bcra.svg)](https://www.npmjs.com/package/bcra)
-[![License: GPL-3.0-or-later](https://img.shields.io/badge/License-GPL--3.0--or--later-blue.svg)](LICENSE)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Test Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen.svg)](./test)
 
 > Privacy-preserving, client-side JavaScript implementation of the National Cancer Institute's Breast Cancer Risk Assessment Tool (BCRAT), also known as the Gail Model.
