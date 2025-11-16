@@ -199,12 +199,12 @@ if (result.success) {
 
 **Output:**
 ```
-Absolute Risk: 2.34%
-Relative Risk (age <50): 1.52
-Relative Risk (age ≥50): 1.48
+Absolute Risk: 4.20%
+Relative Risk (age <50): 4.78
+Relative Risk (age ≥50): 3.58
 ```
 
-This means the individual has a **2.34% absolute risk** of developing invasive breast cancer between ages 40 and 50.
+This means the individual has a **4.20% absolute risk** of developing invasive breast cancer between ages 40 and 50.
 
 ---
 
