@@ -91,7 +91,7 @@ id_counter <- 1
 
 # For each race, create 10 varied test cases
 for (race in 1:11) {
-  # Base case - typical patient
+  # Base case - typical risk factor data
   race_tests <- rbind(race_tests, create_test_case(
     id = id_counter, T1 = 40, T2 = 50, N_Biop = 1, HypPlas = 99,
     AgeMen = 12, Age1st = 25, N_Rels = 1, Race = race,
@@ -131,7 +131,7 @@ for (race in 1:11) {
   ))
   id_counter <- id_counter + 1
 
-  # Young patient
+  # Young individual
   race_tests <- rbind(race_tests, create_test_case(
     id = id_counter, T1 = 25, T2 = 30, N_Biop = 0, HypPlas = 99,
     AgeMen = 13, Age1st = 99, N_Rels = 0, Race = race,
@@ -139,7 +139,7 @@ for (race in 1:11) {
   ))
   id_counter <- id_counter + 1
 
-  # Older patient
+  # Older individual
   race_tests <- rbind(race_tests, create_test_case(
     id = id_counter, T1 = 70, T2 = 80, N_Biop = 1, HypPlas = 99,
     AgeMen = 12, Age1st = 28, N_Rels = 0, Race = race,

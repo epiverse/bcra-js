@@ -184,7 +184,7 @@ export function validateAge(age, fieldName, options = {}) {
  * @example
  * // Form data with string values
  * const formData = {
- *   id: "patient-123",
+ *   id: "subject-123",
  *   initialAge: "40",
  *   projectionEndAge: "50",
  *   race: "1",

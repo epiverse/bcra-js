@@ -679,7 +679,7 @@ describe('End-to-end risk calculation', () => {
     describe('Input sanitization (string to number conversion)', () => {
       it('should successfully sanitize and calculate with string inputs', () => {
         const individual = {
-          id: 'patient-105',
+          id: 'subject-105',
           initialAge: '45',
           projectionEndAge: '50',
           race: '1',
@@ -721,7 +721,7 @@ describe('End-to-end risk calculation', () => {
 
       it('should preserve string id while converting numeric fields', () => {
         const individual = {
-          id: 'patient-alpha-107',
+          id: 'subject-alpha-107',
           initialAge: '45',
           projectionEndAge: '50',
           race: '1',

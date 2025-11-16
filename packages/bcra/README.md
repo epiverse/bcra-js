@@ -16,7 +16,7 @@
 - [Quick Start](#quick-start)
 - [API Reference](#api-reference)
   - [calculateRisk()](#calculateriskdata-options)
-  - [calculateBatchRisk()](#calculatebatchriskpatients-options)
+  - [calculateBatchRisk()](#calculatebatchriskdata-options)
   - [Race Codes](#race-codes)
   - [Return Values](#return-values)
 - [Usage Examples](#usage-examples)
@@ -67,8 +67,8 @@ Originally developed by Dr. Mitchell Gail and colleagues at the National Cancer 
 - User-friendly error messages
 
 ✅ **Flexible Usage**
-- Single patient calculations
-- Batch processing for multiple patients
+- Single individual calculations
+- Batch processing for multiple individuals
 - Optional average risk comparison
 - Raw input or pre-recoded data support
 
@@ -172,8 +172,8 @@ Multiple CDN options are available for quick integration without a build step:
 ```javascript
 import { calculateRisk, RaceCode } from 'bcra';
 
-// Define patient data
-const patientData = {
+// Define risk factor data for an individual
+const data = {
   id: 1,
   initialAge: 40,              // Current age: 40 years
   projectionEndAge: 50,         // Calculate risk up to age 50
@@ -186,7 +186,7 @@ const patientData = {
 };
 
 // Calculate risk
-const result = calculateRisk(patientData);
+const result = calculateRisk(data);
 
 if (result.success) {
   console.log(`Absolute Risk: ${result.absoluteRisk.toFixed(2)}%`);
@@ -204,7 +204,7 @@ Relative Risk (age <50): 1.52
 Relative Risk (age ≥50): 1.48
 ```
 
-This means the patient has a **2.34% absolute risk** of developing invasive breast cancer between ages 40 and 50.
+This means the individual has a **2.34% absolute risk** of developing invasive breast cancer between ages 40 and 50.
 
 ---
 
@@ -273,35 +273,35 @@ Calculates breast cancer risk for a single individual.
 
 ---
 
-### `calculateBatchRisk(patients, options)`
+### `calculateBatchRisk(data, options)`
 
 Calculates breast cancer risk for multiple individuals.
 
 #### Parameters
 
-**`patients`** (Array) - Array of risk factor profiles (same format as `calculateRisk` data parameter)
+**`data`** (Array) - Array of risk factor profiles (same format as `calculateRisk` data parameter)
 
 **`options`** (Object, optional) - Same options as `calculateRisk`
 
 #### Returns
 
-**Array of `RiskResult`** objects, one for each patient in the input array.
+**Array of `RiskResult`** objects, one for each individual in the input array.
 
 #### Example
 
 ```javascript
 import { calculateBatchRisk, RaceCode } from 'bcra';
 
-const patients = [
+const data = [
   { id: 1, initialAge: 40, projectionEndAge: 50, race: RaceCode.WHITE, /* ... */ },
   { id: 2, initialAge: 35, projectionEndAge: 45, race: RaceCode.AFRICAN_AMERICAN, /* ... */ },
   { id: 3, initialAge: 50, projectionEndAge: 60, race: RaceCode.HISPANIC_US_BORN, /* ... */ },
 ];
 
-const results = calculateBatchRisk(patients);
+const results = calculateBatchRisk(data);
 
 results.forEach((result, index) => {
-  console.log(`Patient ${patients[index].id}:`);
+  console.log(`Subject: ${data[index].id}:`);
   if (result.success) {
     console.log(`  Absolute Risk: ${result.absoluteRisk.toFixed(2)}%`);
   } else {

@@ -37,7 +37,7 @@ describe('validateRiskFactorDataStructure', () => {
 
     it('should accept data with string id', () => {
       const data = {
-        id: 'patient-123',
+        id: 'subject-123',
         initialAge: 40,
         projectionEndAge: 50,
         race: 1,
@@ -295,7 +295,7 @@ describe('sanitizeRiskFactorData', () => {
   describe('String to number conversion', () => {
     it('should convert numeric string fields to numbers', () => {
       const data = {
-        id: 'patient-123',
+        id: 'subject-123',
         initialAge: '40',
         projectionEndAge: '50',
         race: '1',
@@ -308,7 +308,7 @@ describe('sanitizeRiskFactorData', () => {
 
       const sanitized = sanitizeRiskFactorData(data);
 
-      expect(sanitized.id).toBe('patient-123'); // Preserved as string
+      expect(sanitized.id).toBe('subject-123'); // Preserved as string
       expect(sanitized.initialAge).toBe(40);
       expect(sanitized.projectionEndAge).toBe(50);
       expect(sanitized.race).toBe(1);

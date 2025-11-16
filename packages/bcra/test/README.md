@@ -325,7 +325,7 @@ import { calculateRisk } from '../../src/index.js';
 
 describe('Complete workflow', () => {
   it('should calculate risk end-to-end', () => {
-    const result = calculateRisk(patientData);
+    const result = calculateRisk(data);
 
     expect(result.success).toBe(true);
     expect(result.absoluteRisk).toBeGreaterThan(0);
