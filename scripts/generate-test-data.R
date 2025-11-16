@@ -4,8 +4,8 @@
 # Generates comprehensive test cases for cross-validation between R and JavaScript implementations
 # Output: JSON files in packages/bcra/test/fixtures/r-reference/
 
-library(BCRA)
-library(jsonlite)
+if (!require("BCRA")) install.packages("BCRA")
+if (!require("jsonlite")) install.packages("jsonlite")
 
 # Helper function to create a test case
 create_test_case <- function(id, T1, T2, N_Biop, HypPlas, AgeMen, Age1st, N_Rels, Race, description = "") {
