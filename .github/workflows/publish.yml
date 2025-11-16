@@ -51,8 +51,9 @@ jobs:
           ls -lh *.js | awk '{print $9, "->", $5}'
 
           # Check if bundles are reasonable size (< 50KB)
-          ES_SIZE=$(stat -f%z bcra.es.js)
-          UMD_SIZE=$(stat -f%z bcra.umd.js)
+          # Use Linux stat syntax (GitHub Actions runs on Ubuntu)
+          ES_SIZE=$(stat -c%s bcra.es.js)
+          UMD_SIZE=$(stat -c%s bcra.umd.js)
 
           if [ $ES_SIZE -gt 51200 ]; then
             echo "⚠️ Warning: ES bundle size ($ES_SIZE bytes) exceeds 50KB"
