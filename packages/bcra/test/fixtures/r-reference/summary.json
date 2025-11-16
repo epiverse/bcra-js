@@ -1,0 +1,38 @@
+[
+  {
+    "Category": "Race-Specific",
+    "TestCases": 110,
+    "ValidCases": 110,
+    "ErrorCases": 0
+  },
+  {
+    "Category": "Age Edge Cases",
+    "TestCases": 25,
+    "ValidCases": 23,
+    "ErrorCases": 2
+  },
+  {
+    "Category": "Pattern Numbers",
+    "TestCases": 108,
+    "ValidCases": 108,
+    "ErrorCases": 0
+  },
+  {
+    "Category": "Special Values",
+    "TestCases": 27,
+    "ValidCases": 27,
+    "ErrorCases": 0
+  },
+  {
+    "Category": "Validation Errors",
+    "TestCases": 25,
+    "ValidCases": 4,
+    "ErrorCases": 21
+  },
+  {
+    "Category": "Numerical Accuracy",
+    "TestCases": 47,
+    "ValidCases": 47,
+    "ErrorCases": 0
+  }
+]
