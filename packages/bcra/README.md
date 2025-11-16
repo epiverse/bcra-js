@@ -24,8 +24,6 @@
 - [Error Handling](#error-handling)
 - [Scientific Background](#scientific-background)
 - [Development](#development)
-- [Project Status](#project-status)
-- [License](#license)
 - [Disclaimer](#disclaimer)
 
 ---
@@ -177,12 +175,12 @@ Calculates breast cancer risk for a single individual.
 | Field | Type | Description | Valid Values |
 |-------|------|-------------|--------------|
 | `id` | number \| string | Unique identifier | Any |
-| `initialAge` | number | Current age | 20 ≤ age < 90 |
-| `projectionEndAge` | number | End age for risk projection | initialAge < age ≤ 90 |
+| `initialAge` | number | Current age | 20 ≤ initialAge < 90 |
+| `projectionEndAge` | number | End age for risk projection | initialAge < projectionEndAge ≤ 90 |
 | `race` | number | Race/ethnicity code | 1-11 (see [Race Codes](#race-codes)) |
 | `numBreastBiopsies` | number | Number of breast biopsies | 0, 1, 2, 3, ..., or 99 (unknown) |
-| `ageAtMenarche` | number | Age at first menstrual period | Age ≤ initialAge, or 99 (unknown) |
-| `ageAtFirstBirth` | number | Age at first live birth | ageAtMenarche ≤ age ≤ initialAge, 98 (nulliparous), or 99 (unknown) |
+| `ageAtMenarche` | number | Age at first menstrual period | ageAtMenarche ≤ initialAge, or 99 (unknown) |
+| `ageAtFirstBirth` | number | Age at first live birth | ageAtMenarche ≤ ageAtFirstBirth ≤ initialAge, 98 (nulliparous), or 99 (unknown) |
 | `numRelativesWithBrCa` | number | First-degree relatives with breast cancer | 0, 1, 2, 3, ..., or 99 (unknown) |
 | `atypicalHyperplasia` | number | Atypical hyperplasia status | 0 (no), 1 (yes), 99 (unknown/N/A) |
 
@@ -663,6 +661,7 @@ $$
 **Two-stage calculation:**
 
 For ages < 50:
+
 $$
 LP_1 = \beta_0 \cdot NB + \beta_1 \cdot AM + \beta_2 \cdot AF + \beta_3 \cdot NR + \beta_5 \cdot (AF \times NR) + \ln(R_{Hyp})
 $$
@@ -672,6 +671,7 @@ RR_1 = \exp(LP_1)
 $$
 
 For ages ≥ 50:
+
 $$
 LP_2 = LP_1 + \beta_4 \cdot NB
 $$
