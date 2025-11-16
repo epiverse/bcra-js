@@ -1,8 +1,10 @@
 # Dependencies
 node_modules/
-package-lock.json
 yarn.lock
 pnpm-lock.yaml
+
+# Allow package-lock.json for monorepo (npm workspaces)
+!package-lock.json
 
 # Build outputs
 dist/

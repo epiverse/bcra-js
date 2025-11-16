@@ -31,7 +31,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd packages/bcra
+          # Install from root for npm workspace monorepo
           npm ci
 
       - name: Run tests
