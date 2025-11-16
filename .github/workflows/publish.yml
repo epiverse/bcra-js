@@ -1,0 +1,158 @@
+name: Publish to NPM
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (leave empty to use package.json version)'
+        required: false
+        type: string
+
+jobs:
+  publish:
+    name: Publish BCRA Package
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: |
+          cd packages/bcra
+          npm ci
+
+      - name: Run tests
+        run: |
+          cd packages/bcra
+          npm test
+
+      - name: Build library
+        run: |
+          cd packages/bcra
+          npm run build
+
+      - name: Check bundle size
+        run: |
+          cd packages/bcra/dist
+          echo "📦 Bundle Sizes:"
+          ls -lh *.js | awk '{print $9, "->", $5}'
+
+          # Check if bundles are reasonable size (< 50KB)
+          ES_SIZE=$(stat -f%z bcra.es.js)
+          UMD_SIZE=$(stat -f%z bcra.umd.js)
+
+          if [ $ES_SIZE -gt 51200 ]; then
+            echo "⚠️ Warning: ES bundle size ($ES_SIZE bytes) exceeds 50KB"
+          fi
+
+          if [ $UMD_SIZE -gt 51200 ]; then
+            echo "⚠️ Warning: UMD bundle size ($UMD_SIZE bytes) exceeds 50KB"
+          fi
+
+          echo "✅ Bundle size check complete"
+
+      - name: Verify package contents
+        run: |
+          cd packages/bcra
+          npm pack --dry-run
+          echo "✅ Package contents verified"
+
+      - name: Get package version
+        id: package-version
+        run: |
+          cd packages/bcra
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "📌 Package version: $VERSION"
+
+      - name: Check if version exists on NPM
+        id: check-version
+        run: |
+          cd packages/bcra
+          VERSION="${{ steps.package-version.outputs.version }}"
+
+          if npm view bcra@$VERSION version 2>/dev/null; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "❌ Version $VERSION already exists on NPM"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "✅ Version $VERSION is new"
+          fi
+
+      - name: Publish to NPM
+        if: steps.check-version.outputs.exists == 'false'
+        run: |
+          cd packages/bcra
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create Git tag
+        if: steps.check-version.outputs.exists == 'false'
+        run: |
+          VERSION="${{ steps.package-version.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git tag -a "v$VERSION" -m "Release v$VERSION"
+          git push origin "v$VERSION"
+
+      - name: Create GitHub Release
+        if: steps.check-version.outputs.exists == 'false'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.package-version.outputs.version }}
+          release_name: Release v${{ steps.package-version.outputs.version }}
+          body: |
+            ## BCRA v${{ steps.package-version.outputs.version }}
+
+            🎉 Published to NPM: https://www.npmjs.com/package/bcra
+
+            ### Installation
+
+            ```bash
+            npm install bcra
+            ```
+
+            ### CDN Links
+
+            - **jsDelivr ES Module**: https://cdn.jsdelivr.net/npm/bcra@${{ steps.package-version.outputs.version }}/dist/bcra.es.js
+            - **jsDelivr UMD**: https://cdn.jsdelivr.net/npm/bcra@${{ steps.package-version.outputs.version }}/dist/bcra.umd.js
+            - **unpkg ES Module**: https://unpkg.com/bcra@${{ steps.package-version.outputs.version }}/dist/bcra.es.js
+            - **unpkg UMD**: https://unpkg.com/bcra@${{ steps.package-version.outputs.version }}/dist/bcra.umd.js
+
+            ### Documentation
+
+            See the [README](https://github.com/epiverse/bcra-js/tree/main/packages/bcra/README.md) for full documentation.
+          draft: false
+          prerelease: false
+
+      - name: Success message
+        if: steps.check-version.outputs.exists == 'false'
+        run: |
+          echo "🎉 Successfully published bcra@${{ steps.package-version.outputs.version }} to NPM!"
+          echo "📦 NPM: https://www.npmjs.com/package/bcra"
+          echo "🌐 jsDelivr: https://cdn.jsdelivr.net/npm/bcra@${{ steps.package-version.outputs.version }}/"
+          echo "🌐 unpkg: https://unpkg.com/bcra@${{ steps.package-version.outputs.version }}/"
+
+      - name: Version already exists
+        if: steps.check-version.outputs.exists == 'true'
+        run: |
+          echo "⚠️ Version ${{ steps.package-version.outputs.version }} already exists on NPM"
+          echo "Please update the version in package.json before publishing"
+          exit 1

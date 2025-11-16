@@ -1,0 +1,70 @@
+# NPM Ignore File for BCRA Package
+# Only ship production-ready files: dist/, types/, LICENSE, README.md
+
+# Development files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Source files (users get compiled dist/)
+src/
+
+# Test files and fixtures
+test/
+tests/
+*.test.js
+*.spec.js
+__tests__/
+coverage/
+.nyc_output/
+
+# Build configuration
+vite.config.js
+vitest.config.js
+rollup.config.js
+tsconfig.json
+.eslintrc*
+.prettierrc*
+.editorconfig
+
+# Documentation (keep README.md only)
+docs/
+CONTRIBUTING.md
+CHANGELOG.md
+BCRA-JS-Implementation-Plan.md
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# Environment and logs
+.env
+.env.*
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Package manager files
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.npmrc
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+.DS_Store
+Thumbs.db
+
+# Reference R package (not needed in NPM package)
+../BCRA-R/
+
+# Development scripts
+scripts/

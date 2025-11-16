@@ -1,0 +1,12 @@
+{
+  "files": {
+    "include": [
+      "dist/**/*"
+    ]
+  },
+  "cdn": {
+    "defaultFile": "dist/bcra.es.js",
+    "fallback": "dist/bcra.umd.js"
+  },
+  "packageManager": "npm"
+}

@@ -24,6 +24,7 @@
 - [Error Handling](#error-handling)
 - [Scientific Background](#scientific-background)
 - [Development](#development)
+- [Publishing to NPM](#publishing-to-npm)
 - [Disclaimer](#disclaimer)
 
 ---
@@ -99,20 +100,65 @@ yarn add bcra
 pnpm add bcra
 ```
 
-### CDN (jsDelivr)
+### CDN
+
+Multiple CDN options are available for quick integration without a build step:
+
+#### jsDelivr (Recommended)
+
+**ES Module (Modern Browsers):**
+```html
+<script type="module">
+  import { calculateRisk, RaceCode } from 'https://cdn.jsdelivr.net/npm/bcra@1/dist/bcra.es.js';
+
+  // Your code here
+  const result = calculateRisk({ /* ... */ });
+</script>
+```
+
+**UMD (All Browsers including IE11):**
+```html
+<script src="https://cdn.jsdelivr.net/npm/bcra@1/dist/bcra.umd.js"></script>
+<script>
+  const { calculateRisk, RaceCode } = window.BCRA;
+
+  // Your code here
+  const result = calculateRisk({ /* ... */ });
+</script>
+```
+
+**Specific Version (Recommended for Production):**
+```html
+<!-- Replace 1.0.0 with specific version -->
+<script type="module">
+  import { calculateRisk } from 'https://cdn.jsdelivr.net/npm/bcra@1.0.0/dist/bcra.es.js';
+</script>
+```
+
+#### unpkg
 
 ```html
 <!-- ES Module -->
 <script type="module">
-  import { calculateRisk } from 'https://cdn.jsdelivr.net/npm/bcra@latest/dist/bcra.es.js';
+  import { calculateRisk } from 'https://unpkg.com/bcra@1/dist/bcra.es.js';
 </script>
 
-<!-- UMD (for older browsers) -->
-<script src="https://cdn.jsdelivr.net/npm/bcra@latest/dist/bcra.umd.js"></script>
-<script>
-  const { calculateRisk } = window.BCRA;
+<!-- UMD -->
+<script src="https://unpkg.com/bcra@1/dist/bcra.umd.js"></script>
+```
+
+#### Skypack (ESM-only, optimized for modern browsers)
+
+```html
+<script type="module">
+  import { calculateRisk, RaceCode } from 'https://cdn.skypack.dev/bcra@1';
 </script>
 ```
+
+**Version Pinning:**
+- Use `@latest` for the latest version (not recommended for production)
+- Use `@1` for the latest v1.x.x version (recommended)
+- Use `@1.0.0` for a specific version (most stable)
 
 ### Browser Requirements
 
@@ -832,6 +878,109 @@ Contributions are welcome! Please:
 - Add JSDoc comments for all public functions
 - Update TypeScript definitions if API changes
 - Keep functions focused and modular
+
+---
+
+## Publishing to NPM
+
+**For Maintainers Only**
+
+This section describes how to publish new versions of the BCRA package to NPM.
+
+### Prerequisites
+
+- Write access to the repository
+- NPM account with publish permissions (configured as `NPM_TOKEN` secret in GitHub)
+
+### Publishing Process
+
+1. **Update Version**
+
+   ```bash
+   # Update version in package.json (following semantic versioning)
+   npm version patch   # Bug fixes (1.0.0 → 1.0.1)
+   npm version minor   # New features (1.0.0 → 1.1.0)
+   npm version major   # Breaking changes (1.0.0 → 2.0.0)
+   ```
+
+2. **Commit Version Change**
+
+   ```bash
+   git add package.json
+   git commit -m "Bump version to X.Y.Z"
+   git push origin main
+   ```
+
+3. **Trigger GitHub Action**
+
+   - Go to **Actions** tab in GitHub repository
+   - Select **"Publish to NPM"** workflow
+   - Click **"Run workflow"**
+   - Select branch (usually `main`)
+   - Click **"Run workflow"** button
+
+4. **Automated Process**
+
+   The GitHub Action will automatically:
+   - ✅ Run all tests
+   - ✅ Build the library
+   - ✅ Check bundle sizes
+   - ✅ Verify package contents
+   - ✅ Check if version already exists on NPM
+   - ✅ Publish to NPM (if version is new)
+   - ✅ Create Git tag (`vX.Y.Z`)
+   - ✅ Create GitHub Release with CDN links
+
+5. **Verify Publication**
+
+   After successful publication:
+   - **NPM**: https://www.npmjs.com/package/bcra
+   - **jsDelivr**: https://cdn.jsdelivr.net/npm/bcra@X.Y.Z/
+   - **unpkg**: https://unpkg.com/bcra@X.Y.Z/
+   - **GitHub Releases**: https://github.com/epiverse/bcra-js/releases
+
+### Local Testing Before Publishing
+
+Test the package locally before publishing:
+
+```bash
+cd packages/bcra
+
+# Create a package tarball
+npm pack
+
+# This creates bcra-X.Y.Z.tgz
+
+# Test in another project
+cd /path/to/test-project
+npm install /path/to/bcra-X.Y.Z.tgz
+
+# Verify it works
+node -e "const { calculateRisk } = require('bcra'); console.log(calculateRisk);"
+```
+
+### Rollback Procedure
+
+If a published version has critical issues:
+
+1. **Deprecate the problematic version:**
+   ```bash
+   npm deprecate bcra@X.Y.Z "Critical bug - use version X.Y.Z+1 instead"
+   ```
+
+2. **Publish a patch version** with the fix following the normal process above
+
+**Note**: NPM does not allow unpublishing packages after 24 hours. Deprecation is the recommended approach.
+
+### Version Numbering Guidelines
+
+Follow [Semantic Versioning](https://semver.org/):
+
+- **Patch (1.0.x)**: Bug fixes, performance improvements, documentation updates
+- **Minor (1.x.0)**: New features, new race models, API additions (backward compatible)
+- **Major (x.0.0)**: Breaking API changes, removed features, major refactoring
+
+For more detailed publishing documentation, see [PUBLISHING.md](./PUBLISHING.md).
 
 ---
 
