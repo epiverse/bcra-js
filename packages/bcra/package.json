@@ -27,10 +27,7 @@
     "gail-model",
     "medical",
     "healthcare",
-    "epidemiology",
-    "oncology",
-    "cancer-screening",
-    "risk-calculator"
+    "epidemiology"
   ],
   "author": "Jeya Balaji Balasubramanian",
   "license": "GPL-3.0-or-later",
