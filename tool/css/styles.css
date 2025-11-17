@@ -1,0 +1,731 @@
+/**
+ * Breast Cancer Risk Assessment Tool - Custom Styles
+ * Built on top of Pico CSS for minimal, elegant design
+ */
+
+/* ==================== CSS Variables ==================== */
+:root {
+  /* Header Colors */
+  --header-bg: #1e3a8a;
+  --header-text: #ffffff;
+
+  /* Notice Colors */
+  --privacy-bg: #d4edda;
+  --privacy-text: #155724;
+  --privacy-border: #c3e6cb;
+
+  --usage-bg: #fff3cd;
+  --usage-text: #856404;
+  --usage-border: #ffeaa7;
+
+  /* Risk Visualization Colors */
+  --risk-patient-high: #dc3545;
+  --risk-patient-low: #dc3545;
+  --risk-average: #007bff;
+
+  /* Form Section Colors */
+  --form-bg: #f8f9fa;
+  --form-border: #dee2e6;
+  --eligibility-band: #dc3545;
+  --demographics-band: #007bff;
+  --history-band: #28a745;
+
+  /* Results Colors */
+  --results-bg: #f8f9fa;
+  --results-border: #dee2e6;
+  --results-notice-bg: #ffffff;
+  --results-notice-border: #dee2e6;
+
+  /* Table Colors */
+  --table-header-bg: #1e3a8a;
+  --table-header-text: #ffffff;
+  --table-row-even: #f8f9fa;
+  --table-row-hover: #e9ecef;
+  --table-border: #dee2e6;
+
+  /* Spacing */
+  --section-spacing: 2rem;
+  --form-group-spacing: 1.5rem;
+}
+
+/* ==================== Header ==================== */
+.app-header {
+  background-color: var(--header-bg);
+  margin: -1rem -1rem 2rem -1rem;
+  padding: 2rem 1rem;
+  border-radius: 0;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 2rem;
+}
+
+.header-text {
+  flex: 1;
+}
+
+.app-header h1 {
+  color: var(--header-text);
+  text-align: left;
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+}
+
+.app-header .subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  text-align: left;
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+.github-link {
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.github-link:hover {
+  transform: translateY(-2px);
+  opacity: 0.8;
+}
+
+.github-logo {
+  width: 64px;
+  height: 64px;
+  filter: brightness(0) invert(1);
+}
+
+/* ==================== Typography ==================== */
+h1 {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  color: var(--primary);
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--muted-color);
+  font-size: 1rem;
+  margin-bottom: var(--section-spacing);
+}
+
+h2 {
+  margin-top: var(--section-spacing);
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 0.5rem;
+}
+
+h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* ==================== Notice Boxes ==================== */
+.notice {
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 0.5rem;
+  border: 2px solid;
+  line-height: 1.6;
+}
+
+.privacy-notice {
+  background-color: var(--privacy-bg);
+  color: var(--privacy-text);
+  border-color: var(--privacy-border);
+}
+
+.privacy-notice a {
+  color: var(--privacy-text);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.privacy-notice a:hover {
+  color: #0d3d17;
+}
+
+.usage-notice {
+  background-color: var(--usage-bg);
+  color: var(--usage-text);
+  border-color: var(--usage-border);
+}
+
+/* ==================== Form Styles ==================== */
+#bcra-form {
+  background-color: var(--form-bg);
+  padding: 2rem;
+  border-radius: 0.5rem;
+  border: 2px solid var(--form-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+fieldset {
+  margin-bottom: var(--section-spacing);
+  padding: 1.5rem;
+  padding-left: 2rem;
+  border: 2px solid var(--form-border);
+  border-left-width: 5px;
+  border-radius: 0.5rem;
+  background-color: white;
+  position: relative;
+}
+
+/* Colored bands for different sections */
+fieldset:nth-of-type(1) {
+  border-left-color: var(--eligibility-band);
+}
+
+fieldset:nth-of-type(1) legend {
+  color: var(--eligibility-band);
+}
+
+#demographics-section {
+  border-left-color: var(--demographics-band);
+}
+
+#demographics-section legend {
+  color: var(--demographics-band);
+}
+
+#history-section {
+  border-left-color: var(--history-band);
+}
+
+#history-section legend {
+  color: var(--history-band);
+}
+
+fieldset:disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+legend {
+  font-size: 1.25rem;
+  font-weight: 600;
+  padding: 0 0.5rem;
+}
+
+.form-group {
+  margin-bottom: var(--form-group-spacing);
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-group label small {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--muted-color);
+  font-weight: normal;
+  font-size: 0.875rem;
+}
+
+/* Conditional Questions Animation */
+.conditional-question {
+  margin-left: 2rem;
+  padding-left: 1rem;
+  border-left: 3px solid var(--primary);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.form-actions button {
+  min-width: 150px;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==================== Results Section ==================== */
+#results-section {
+  margin-top: var(--section-spacing);
+  padding: 2rem;
+  background-color: var(--results-bg);
+  border: 2px solid var(--results-border);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.results-notice {
+  background-color: var(--results-notice-bg);
+  border: 2px solid var(--results-notice-border);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.results-notice ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.results-notice li {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.results-notice a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+/* ==================== Risk Visualizations ==================== */
+.risk-visualization {
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+}
+
+.risk-visualization h3 {
+  text-align: center;
+  margin-top: 0;
+  color: var(--primary);
+}
+
+.visualization-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.viz-grid {
+  text-align: center;
+}
+
+.viz-grid h4 {
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.viz-grid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.risk-description {
+  text-align: center;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  border: 1px solid var(--muted-border-color);
+}
+
+.risk-description strong {
+  color: var(--primary);
+}
+
+.risk-higher {
+  color: var(--risk-patient-high);
+  font-weight: 600;
+}
+
+.risk-lower {
+  color: var(--risk-average);
+  font-weight: 600;
+}
+
+/* Interpretable Risk Description */
+.interpretable-description {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background-color: #f0f8ff;
+  border-left: 4px solid var(--header-bg);
+  border-radius: 0.5rem;
+}
+
+.interpretable-description h4 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--header-bg);
+  font-size: 1.1rem;
+  text-align: left;
+}
+
+.interpretable-description ul {
+  list-style: none !important;
+  padding-left: 0;
+  margin: 0;
+}
+
+.interpretable-description li {
+  list-style: none !important;
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+  position: relative;
+  line-height: 1.6;
+}
+
+.interpretable-description li:before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--header-bg);
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.interpretable-description li:last-child {
+  margin-bottom: 0;
+}
+
+/* ==================== Answers Summary ==================== */
+.answers-summary {
+  margin-top: 3rem;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  border: 2px solid var(--table-border);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.answers-summary h3 {
+  margin-top: 0;
+  color: var(--header-bg);
+}
+
+#answers-table {
+  width: 100%;
+  margin-top: 1rem;
+  border-collapse: collapse;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+#answers-table thead {
+  background-color: var(--table-header-bg) !important;
+}
+
+#answers-table thead th {
+  padding: 1rem 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  background-color: var(--table-header-bg) !important;
+  color: var(--table-header-text) !important;
+  border: 1px solid var(--table-border);
+}
+
+#answers-table td {
+  padding: 0.75rem;
+  border: 1px solid var(--table-border);
+  transition: background-color 0.2s ease;
+}
+
+#answers-table tbody tr {
+  background-color: white;
+}
+
+#answers-table tbody tr:nth-child(even) {
+  background-color: var(--table-row-even);
+}
+
+#answers-table tbody tr:hover {
+  background-color: #d3d8de !important;
+  transition: all 0.15s ease;
+  box-shadow: inset 4px 0 0 var(--header-bg) !important;
+  transform: scale(1.005);
+}
+
+.answer-subquestion {
+  padding-left: 2rem;
+  font-style: italic;
+  color: var(--muted-color);
+}
+
+/* ==================== Modal Styles ==================== */
+dialog {
+  max-width: 500px;
+}
+
+dialog article {
+  margin: 0;
+}
+
+dialog header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--muted-border-color);
+}
+
+dialog header h3 {
+  margin: 0;
+  color: var(--primary);
+}
+
+dialog p {
+  padding: 1.5rem;
+  line-height: 1.6;
+}
+
+dialog footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--muted-border-color);
+  text-align: right;
+}
+
+dialog a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+/* ==================== Responsive Design ==================== */
+
+/* Tablet Breakpoint */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 1.5rem 1rem;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .app-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .app-header .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .github-link {
+    align-self: flex-end;
+  }
+
+  .github-logo {
+    width: 56px;
+    height: 56px;
+  }
+
+  #bcra-form {
+    padding: 1.5rem;
+  }
+
+  .visualization-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .conditional-question {
+    margin-left: 1rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+
+  fieldset {
+    padding: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  .risk-visualization {
+    padding: 1rem;
+  }
+
+  .answers-summary {
+    padding: 1rem;
+  }
+
+  #answers-table {
+    font-size: 0.9rem;
+  }
+
+  #answers-table th,
+  #answers-table td {
+    padding: 0.5rem;
+  }
+}
+
+/* Mobile Breakpoint */
+@media (max-width: 480px) {
+  .app-header {
+    padding: 1rem;
+  }
+
+  .app-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .app-header .subtitle {
+    font-size: 0.85rem;
+  }
+
+  .github-logo {
+    width: 48px;
+    height: 48px;
+  }
+
+  #bcra-form {
+    padding: 1rem;
+  }
+
+  .notice {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  fieldset {
+    padding: 0.75rem;
+    padding-left: 1rem;
+  }
+
+  legend {
+    font-size: 1.1rem;
+  }
+
+  .conditional-question {
+    margin-left: 0.5rem;
+  }
+
+  .risk-description {
+    font-size: 1rem;
+    padding: 0.75rem;
+  }
+
+  #answers-table {
+    font-size: 0.85rem;
+  }
+
+  #answers-table th,
+  #answers-table td {
+    padding: 0.4rem;
+  }
+
+  .answer-subquestion {
+    padding-left: 1rem;
+  }
+}
+
+/* ==================== Print Styles ==================== */
+@media print {
+  .notice,
+  .form-actions,
+  #calculator-form,
+  button {
+    display: none;
+  }
+
+  #results-section {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .risk-visualization {
+    page-break-inside: avoid;
+  }
+
+  .answers-summary {
+    page-break-inside: avoid;
+  }
+}
+
+/* ==================== Accessibility ==================== */
+:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .notice {
+    border-width: 3px;
+  }
+
+  fieldset {
+    border-width: 2px;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .conditional-question,
+  #results-section {
+    animation: none;
+  }
+}
+
+/* ==================== Loading States ==================== */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+  position: relative;
+}
+
+.loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2rem;
+  height: 2rem;
+  margin: -1rem 0 0 -1rem;
+  border: 3px solid var(--muted-color);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

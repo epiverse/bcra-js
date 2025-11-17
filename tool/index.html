@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Breast Cancer Risk Assessment Tool - Calculate your risk of developing invasive breast cancer using the BCRAT (Gail Model)">
+    <meta name="keywords" content="breast cancer, risk assessment, BCRAT, Gail Model, cancer screening">
+    <title>Breast Cancer Risk Assessment Tool</title>
+
+    <!-- Pico CSS - Minimal CSS Framework -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <main class="container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-text">
+                    <h1>Breast Cancer Risk Assessment Tool</h1>
+                    <p class="subtitle">Estimating a US woman's risk of developing invasive breast cancer</p>
+                </div>
+                <a href="https://github.com/epiverse/bcra-js/tree/main/apps/bcra-tool"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="github-link"
+                   aria-label="View source code on GitHub">
+                    <img src="images/github.svg" alt="GitHub" class="github-logo">
+                </a>
+            </div>
+        </header>
+
+        <!-- Privacy Notice -->
+        <div class="notice privacy-notice" role="alert">
+            <strong>Privacy notice:</strong> All data is maintained and all calculations are performed within your browser.
+            No data is sent to and no calculations are performed by any server.
+            <a href="https://github.com/epiverse/bcra-js/tree/main/apps/bcra-tool" target="_blank" rel="noopener noreferrer">This app's code</a>
+            is open source and can be inspected by anyone.
+        </div>
+
+        <!-- Usage Notice -->
+        <div class="notice usage-notice" role="alert">
+            <strong>Usage notice:</strong> This app is intended for educational purposes only. It is not a substitute for
+            professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified
+            health provider with any questions you may have regarding a medical condition. Never disregard professional medical
+            advice or delay in seeking it because of something you have read on this app.
+        </div>
+
+        <!-- Calculator Form -->
+        <section id="calculator-form">
+            <h2>Risk Assessment Calculator</h2>
+
+            <form id="bcra-form">
+                <!-- Patient Eligibility Section -->
+                <fieldset>
+                    <legend>Patient Eligibility</legend>
+
+                    <!-- Question 1: Medical History -->
+                    <div class="form-group">
+                        <label for="q1-medical-history">
+                            1. Does the woman have a medical history of any breast cancer or of ductal carcinoma in situ (DCIS)
+                            or lobular carcinoma in situ (LCIS) or has she received previous radiation therapy to the chest for
+                            treatment of Hodgkin lymphoma?
+                        </label>
+                        <select id="q1-medical-history" name="medicalHistory" required aria-required="true">
+                            <option value="">-- Select an answer --</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+
+                    <!-- Question 2: Genetic Mutations -->
+                    <div class="form-group">
+                        <label for="q2-genetic-mutation">
+                            2. Does the woman have a mutation in either the BRCA1 or BRCA2 gene, or a diagnosis of a genetic
+                            syndrome that may be associated with elevated risk of breast cancer?
+                        </label>
+                        <select id="q2-genetic-mutation" name="geneticMutation" required aria-required="true">
+                            <option value="">-- Select an answer --</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+                </fieldset>
+
+                <!-- Demographics Section -->
+                <fieldset id="demographics-section" class="conditional-section" disabled>
+                    <legend>Demographics</legend>
+
+                    <!-- Question 3: Age -->
+                    <div class="form-group">
+                        <label for="q3-age">
+                            3. What is the patient's age?
+                            <small>This tool calculates risk for women between the ages of 35 and 85.</small>
+                        </label>
+                        <input type="number" id="q3-age" name="age" min="35" max="85" placeholder="Enter age (35-85)"
+                               required aria-required="true">
+                    </div>
+
+                    <!-- Question 4: Race/Ethnicity -->
+                    <div class="form-group">
+                        <label for="q4-race">4. What is the patient's race/ethnicity?</label>
+                        <select id="q4-race" name="race" required aria-required="true">
+                            <option value="">-- Select race/ethnicity --</option>
+                            <option value="white">White</option>
+                            <option value="african-american">African American</option>
+                            <option value="hispanic">Hispana/Latina</option>
+                            <option value="asian">Asian American</option>
+                            <option value="native-american">American Native or Alaskan Native</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+
+                    <!-- Question 4a: Sub-race (Conditional) -->
+                    <div class="form-group conditional-question" id="q4a-subrace-group" style="display: none;">
+                        <label for="q4a-subrace">4a. What is the sub race/ethnicity or place of birth?</label>
+                        <select id="q4a-subrace" name="subRace">
+                            <option value="">-- Select sub race/ethnicity --</option>
+                        </select>
+                    </div>
+                </fieldset>
+
+                <!-- Patient & Family History Section -->
+                <fieldset id="history-section" class="conditional-section" disabled>
+                    <legend>Patient &amp; Family History</legend>
+
+                    <!-- Question 5: Breast Biopsy -->
+                    <div class="form-group">
+                        <label for="q5-biopsy">
+                            5. Has the patient ever had a breast biopsy with a benign (not cancer) diagnosis?
+                        </label>
+                        <select id="q5-biopsy" name="biopsy" required aria-required="true">
+                            <option value="">-- Select an answer --</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+
+                    <!-- Question 5a: Number of Biopsies (Conditional) -->
+                    <div class="form-group conditional-question" id="q5a-num-biopsies-group" style="display: none;">
+                        <label for="q5a-num-biopsies">
+                            5a. How many breast biopsies with a benign diagnosis has the patient had?
+                        </label>
+                        <select id="q5a-num-biopsies" name="numBiopsies">
+                            <option value="">-- Select number --</option>
+                            <option value="1">1</option>
+                            <option value="2">2 or more</option>
+                        </select>
+                    </div>
+
+                    <!-- Question 5b: Atypical Hyperplasia (Conditional) -->
+                    <div class="form-group conditional-question" id="q5b-hyperplasia-group" style="display: none;">
+                        <label for="q5b-hyperplasia">
+                            5b. Has the patient ever had a breast biopsy with atypical hyperplasia?
+                        </label>
+                        <select id="q5b-hyperplasia" name="hyperplasia">
+                            <option value="">-- Select an answer --</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+
+                    <!-- Question 6: Age at Menarche -->
+                    <div class="form-group">
+                        <label for="q6-menarche">
+                            6. What was the woman's age at the time of her first menstrual period?
+                        </label>
+                        <select id="q6-menarche" name="menarche" required aria-required="true">
+                            <option value="">-- Select age range --</option>
+                            <option value="7-11">7 to 11</option>
+                            <option value="12-13">12 to 13</option>
+                            <option value="14+">14 or older</option>
+                        </select>
+                    </div>
+
+                    <!-- Question 7: Age at First Birth -->
+                    <div class="form-group">
+                        <label for="q7-first-birth">
+                            7. What was the woman's age when she gave birth to her first child?
+                        </label>
+                        <select id="q7-first-birth" name="firstBirth" required aria-required="true">
+                            <option value="">-- Select age range --</option>
+                            <option value="no-births">No Births</option>
+                            <option value="<20">&lt; 20</option>
+                            <option value="20-24">20-24</option>
+                            <option value="25-29">25-29</option>
+                            <option value="30+">30 or older</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+
+                    <!-- Question 8: Family History -->
+                    <div class="form-group">
+                        <label for="q8-relatives">
+                            8. How many of the woman's first-degree relatives (mother, sisters, daughters) have had breast cancer?
+                        </label>
+                        <select id="q8-relatives" name="relatives" required aria-required="true">
+                            <option value="">-- Select number --</option>
+                            <option value="none">None</option>
+                            <option value="one">One</option>
+                            <option value="more-than-one">More than one</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+                </fieldset>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="submit" id="calculate-btn" disabled>Calculate Risk</button>
+                    <button type="button" id="reset-btn" class="secondary">Reset</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Results Section (Initially Hidden) -->
+        <section id="results-section" style="display: none;">
+            <h2>Risk Assessment Results</h2>
+
+            <!-- Important Notice -->
+            <div class="results-notice">
+                <ul>
+                    <li>This tool cannot accurately calculate risk for women with a medical history of breast cancer, DCIS or LCIS.
+                        Other tools may be more appropriate for women with known mutations in either the BRCA1 or BRCA2 gene, or
+                        other hereditary syndromes associated with higher risks of breast cancer. See
+                        <a href="https://bcrisktool.cancer.gov/about.html#OtherRiskAssessmentTools" target="_blank" rel="noopener noreferrer">Other Risk Assessment Tools</a>
+                        for more information.</li>
+                    <li>Although a patient's risk may be accurately estimated, these predictions do not allow one to say precisely
+                        which woman will develop breast cancer.</li>
+                    <li>Some women who do not develop breast cancer have higher risk estimates than those who do develop the disease.</li>
+                    <li>This tool was designed for use by health professionals. If you are not a health professional, you are
+                        encouraged to print these results and discuss them with your provider.</li>
+                    <li>The answers provided were used to estimate absolute risk of developing invasive breast cancer during the
+                        next 5-year period and up to age 90 (lifetime risk).
+                        <ul>
+                            <li>Factors included: patient's personal medical and reproductive history and the history of breast
+                                cancer among her first-degree relatives (mother, sisters, daughters).</li>
+                            <li>For comparison, the tool also presents 5-year and lifetime risk estimates for a woman of the same
+                                age and race/ethnicity who is at average risk for developing breast cancer.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 5-Year Risk Visualization -->
+            <div class="risk-visualization">
+                <h3>5-Year Risk of Developing Breast Cancer</h3>
+                <div class="visualization-container">
+                    <div class="viz-grid">
+                        <h4>Patient's Risk</h4>
+                        <div id="viz-5year-patient"></div>
+                    </div>
+                    <div class="viz-grid">
+                        <h4>Average Risk</h4>
+                        <div id="viz-5year-average"></div>
+                    </div>
+                </div>
+                <p id="risk-5year-description" class="risk-description"></p>
+            </div>
+
+            <!-- Lifetime Risk Visualization -->
+            <div class="risk-visualization">
+                <h3>Lifetime Risk of Developing Breast Cancer</h3>
+                <div class="visualization-container">
+                    <div class="viz-grid">
+                        <h4>Patient's Risk</h4>
+                        <div id="viz-lifetime-patient"></div>
+                    </div>
+                    <div class="viz-grid">
+                        <h4>Average Risk</h4>
+                        <div id="viz-lifetime-average"></div>
+                    </div>
+                </div>
+                <p id="risk-lifetime-description" class="risk-description"></p>
+            </div>
+
+            <!-- Your Answers Summary -->
+            <div class="answers-summary">
+                <h3>Your Answers</h3>
+                <p>These results are based upon how you answered the following questions:</p>
+                <table id="answers-table">
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Answer</th>
+                        </tr>
+                    </thead>
+                    <tbody id="answers-table-body">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="form-actions">
+                <button type="button" id="download-results-btn">Download Results (JSON)</button>
+                <button type="button" id="new-calculation-btn" class="secondary">New Calculation</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Eligibility Modal -->
+    <dialog id="eligibility-modal">
+        <article>
+            <header>
+                <button aria-label="Close" rel="prev" id="modal-close-btn"></button>
+                <h3 id="modal-title">Not Eligible</h3>
+            </header>
+            <p id="modal-message"></p>
+            <footer>
+                <button id="modal-ok-btn" autofocus>OK</button>
+            </footer>
+        </article>
+    </dialog>
+
+    <!-- External Libraries -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <!-- BCRA Library from CDN -->
+    <script type="module">
+        // Import BCRA library and make it globally available
+        import { calculateRisk, RaceCode, RaceLabels } from 'https://cdn.jsdelivr.net/npm/bcra@1/dist/bcra.es.js';
+        window.BCRA = { calculateRisk, RaceCode, RaceLabels };
+    </script>
+
+    <!-- Application Modules -->
+    <script type="module" src="js/utils.js"></script>
+    <script type="module" src="js/visualizations.js"></script>
+    <script type="module" src="js/calculator.js"></script>
+    <script type="module" src="js/form-handler.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
