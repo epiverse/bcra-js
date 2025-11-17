@@ -4,11 +4,11 @@ JavaScript implementation of NCI's Breast Cancer Risk Assessment Tool (BCRAT; Ga
 
 ## About
 
-This package is a JavaScript implementation of the Breast Cancer Risk Assessment Tool (BCRAT), also known as the Gail Model. It provides risk assessment calculations based on the National Cancer Institute's validated breast cancer risk prediction model.
+This package is a JavaScript implementation of the Breast Cancer Risk Assessment Tool (BCRAT), also known as the Gail Model. It provides risk assessment calculations based on the National Cancer Institute's validated breast cancer risk prediction model. The motivation behind the refactoring into JavaScript is to facilitate the development of accessible, privacy-preserving, and scalable web applications with BCRAT.
 
 ## Attribution
 
-This JavaScript implementation is a **derivative work** based on the [BCRA R package](https://cran.r-project.org/package=BCRA) originally developed by **Fanni Zhang** and licensed under GPL-2 or later.
+This JavaScript implementation is a **derivative work** based on the [BCRA R package](https://cran.r-project.org/web/packages/BCRA/) originally developed by **Fanni Zhang** and licensed under GPL-2 or later.
 
 **Original R Package:**
 - Author: Fanni Zhang
@@ -19,7 +19,6 @@ This JavaScript implementation is a **derivative work** based on the [BCRA R pac
 
 **JavaScript Implementation:**
 - Author: Jeya Balaji Balasubramanian
-- Organization: epiVerse
 - Year: 2025
 
 ## License

@@ -18,8 +18,8 @@
  * - 99 = Unknown/Not Applicable - used across multiple fields
  */
 export interface RiskFactorProfile {
-  /** Individual's unique identifier. Positive integer: 1, 2, 3, ... */
-  id: number;
+  /** Individual's unique identifier. Can be a number (e.g., 1, 2, 3) or string (e.g., 'subject-123'). */
+  id: number | string;
 
   /** Current/initial age at assessment. Real number in [20, 90). Must be less than projectionEndAge. */
   initialAge: number;
@@ -282,3 +282,194 @@ export const SpecialValues: {
   /** Not applicable - used for atypicalHyperplasia when no biopsies performed */
   readonly NOT_APPLICABLE: 99;
 };
+
+/**
+ * Options for risk calculation functions.
+ */
+export interface RiskCalculationOptions {
+  /** Whether input is in raw format (true) or already recoded (false). Default: true */
+  rawInput?: boolean;
+
+  /** Whether to also calculate average risk for comparison. Default: false */
+  calculateAverage?: boolean;
+}
+
+/**
+ * Extended risk result with additional metadata.
+ * Includes all fields from RiskResult plus validation details and projection interval.
+ */
+export interface ExtendedRiskResult extends RiskResult {
+  /** Whether the calculation succeeded */
+  success: boolean;
+
+  /** Pattern number (1-108) uniquely identifying the combination of categorical risk factors */
+  patternNumber: number | null;
+
+  /** Number of years in the projection interval (projectionEndAge - initialAge) */
+  projectionInterval: number | null;
+
+  /** Validation details */
+  validation: ValidationResult;
+
+  /** Recoded values used in calculation (same as validation.recodedValues) */
+  recodedValues: RecodedValues | null;
+}
+
+/**
+ * Calculates breast cancer risk for an individual using the BCRAT (Gail Model).
+ *
+ * This is the main entry point for breast cancer risk calculation. It orchestrates
+ * the complete workflow:
+ * 1. Validates and recodes input data
+ * 2. Calculates relative risk using logistic regression
+ * 3. Calculates absolute risk using numerical integration
+ * 4. Optionally calculates average risk for comparison
+ *
+ * The function never throws exceptions. All errors are caught and returned in a
+ * structured error result object.
+ *
+ * @param data - An individual's risk factor data
+ * @param options - Calculation options
+ * @returns Comprehensive risk calculation result
+ *
+ * @example
+ * ```typescript
+ * const profile = {
+ *   id: 1,
+ *   initialAge: 45,
+ *   projectionEndAge: 50,
+ *   race: RaceCode.WHITE,
+ *   numBreastBiopsies: 0,
+ *   ageAtMenarche: 12,
+ *   ageAtFirstBirth: 25,
+ *   numRelativesWithBrCa: 0,
+ *   atypicalHyperplasia: 99
+ * };
+ *
+ * const result = calculateRisk(profile);
+ * console.log(`5-year risk: ${result.absoluteRisk?.toFixed(2)}%`);
+ * ```
+ */
+export function calculateRisk(
+  data: RiskFactorProfile,
+  options?: RiskCalculationOptions
+): ExtendedRiskResult;
+
+/**
+ * Calculates breast cancer risk for multiple individuals (batch processing).
+ *
+ * Processes an array of individual data objects independently. Each calculation
+ * is isolated - no state is shared between individuals.
+ *
+ * @param individuals - Array of individual risk factor data
+ * @param options - Calculation options (applied to all individuals)
+ * @returns Array of risk calculation results
+ *
+ * @example
+ * ```typescript
+ * const individuals = [
+ *   { id: 1, initialAge: 45, projectionEndAge: 50, race: 1, ... },
+ *   { id: 2, initialAge: 50, projectionEndAge: 60, race: 2, ... }
+ * ];
+ *
+ * const results = calculateBatchRisk(individuals);
+ * results.forEach((result, i) => {
+ *   if (result.success) {
+ *     console.log(`Individual ${i+1}: ${result.absoluteRisk?.toFixed(2)}% risk`);
+ *   }
+ * });
+ * ```
+ */
+export function calculateBatchRisk(
+  individuals: RiskFactorProfile[],
+  options?: RiskCalculationOptions
+): ExtendedRiskResult[];
+
+/**
+ * Validates and recodes input data for breast cancer risk assessment.
+ *
+ * This function performs comprehensive validation and transforms raw input values
+ * into categorical variables used by the BCRAT model. Different race groups may
+ * have different recoding rules.
+ *
+ * @param data - Raw risk factor data
+ * @param rawInput - Whether inputs are in raw format. Default: true
+ * @returns Validation result with recoded values or errors
+ */
+export function recodeAndValidate(
+  data: RiskFactorProfile,
+  rawInput?: boolean
+): ValidationResult;
+
+/**
+ * Calculates relative risk using logistic regression with race-specific coefficients.
+ *
+ * This is a lower-level function typically used internally by calculateRisk().
+ * Most users should use calculateRisk() instead.
+ *
+ * @param validation - Validation result containing recoded values
+ * @param race - Race code (1-11)
+ * @returns Object containing relative risks for age <50 and ≥50, and pattern number
+ */
+export function calculateRelativeRisk(
+  validation: ValidationResult,
+  race: number
+): {
+  relativeRiskUnder50: number | null;
+  relativeRiskAtOrAbove50: number | null;
+  patternNumber: number | null;
+};
+
+/**
+ * Calculates absolute risk using numerical integration.
+ *
+ * This is a lower-level function typically used internally by calculateRisk().
+ * Most users should use calculateRisk() instead.
+ *
+ * @param data - Risk factor data
+ * @param validation - Validation result
+ * @param relativeRisk - Relative risk calculation result
+ * @param calculateAverage - Whether to calculate average risk. Default: false
+ * @returns Object containing absolute risk and optionally average risk
+ */
+export function calculateAbsoluteRisk(
+  data: RiskFactorProfile,
+  validation: ValidationResult,
+  relativeRisk: ReturnType<typeof calculateRelativeRisk>,
+  calculateAverage?: boolean
+): {
+  absoluteRisk: number | null;
+  averageRisk: number | null;
+};
+
+/**
+ * Expands 5-year age group rates into single-year rates.
+ *
+ * This is a utility function used internally for numerical integration.
+ * Most users should use calculateRisk() instead.
+ *
+ * @param ratesByGroup - Array of rates for 5-year age groups
+ * @returns Array of rates expanded to single years
+ */
+export function expandToSingleYears(ratesByGroup: number[]): number[];
+
+/**
+ * Library version string.
+ */
+export const VERSION: string;
+
+/**
+ * Constants namespace containing beta coefficients, lambda rates, and attributable risk values.
+ */
+export * as constants from './constants';
+
+/**
+ * Default export providing main API functions.
+ */
+declare const defaultExport: {
+  calculateRisk: typeof calculateRisk;
+  calculateBatchRisk: typeof calculateBatchRisk;
+  VERSION: string;
+};
+
+export default defaultExport;

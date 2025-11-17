@@ -29,7 +29,7 @@
  * - 99 = Unknown/Not Applicable - used across multiple fields
  *
  * @typedef {Object} RiskFactorProfile
- * @property {number} id - Individual's unique identifier. Positive integer: 1, 2, 3, ...
+ * @property {number|string} id - Individual's unique identifier. Can be a number (e.g., 1, 2, 3) or string (e.g., 'subject-123').
  * @property {number} initialAge - Current/initial age at assessment. Real number in [20, 90). Must be less than projectionEndAge.
  * @property {number} projectionEndAge - Future age for risk projection. Real number in (20, 90]. Must be greater than initialAge.
  * @property {number} race - Race/ethnicity code. Integer in [1, 11]. See RaceCode enum and RaceLabels for valid values.
@@ -105,7 +105,7 @@
  * @property {boolean} isValid - Whether the input data passed all validation checks. If false, risk calculation should not proceed.
  * @property {string[]} errors - Array of error messages describing validation failures. Empty if isValid is true.
  * @property {string[]} warnings - Array of warning messages for potential data issues that don't prevent calculation.
- * @property {RecodedValues} recodedValues - Transformed covariate values ready for risk calculation. Null if validation failed.
+ * @property {RecodedValues|null} recodedValues - Transformed covariate values ready for risk calculation. Null if validation failed.
  * @property {number} errorIndicator - Binary error flag. 0 = valid, 1 = error present. Matches R package convention.
  *
  * @example

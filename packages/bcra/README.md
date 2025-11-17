@@ -11,7 +11,6 @@
 ## Table of Contents
 
 - [Overview](#overview)
-- [Features](#features)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [API Reference](#api-reference)
@@ -31,52 +30,15 @@
 
 ## Overview
 
-**BCRA** is a pure JavaScript implementation of the Breast Cancer Risk Assessment Tool (BCRAT), commonly known as the **Gail Model**. This library calculates the absolute risk of developing invasive breast cancer over a specified time period based on individual risk factors.
+**BCRA** is a pure JavaScript implementation of the Breast Cancer Risk Assessment Tool (BCRAT), commonly known as the **Gail Model**. This library calculates the absolute risk of developing invasive breast cancer over a specified time period based on individual's risk factors.
 
-Originally developed by Dr. Mitchell Gail and colleagues at the National Cancer Institute, the Gail Model is one of the most widely validated breast cancer risk assessment tools. This JavaScript implementation maintains **full computational fidelity** with the original R package while providing a lightweight, client-side solution.
+Originally developed by Dr. Mitchell Gail and colleagues at the National Cancer Institute, the Gail Model is one of the most widely validated breast cancer risk assessment tools. This JavaScript implementation maintains **full computational fidelity** with the original R package while providing a lightweight, client-side solution. The JavaScript implementation facilitates the development of accessible, privacy-preserving, and scalable web applications with BCRAT.
 
-### Why BCRA?
+### Why BCRA in JavaScript?
 
-- **Privacy-Preserving**: All calculations run entirely in the browser—no data is sent to servers
-- **Clinically Validated**: Implements the exact algorithms from NCI's BCRAT (Gail Model)
-- **Multi-Ethnic Support**: Includes race-specific models for 11 different populations
-- **Zero Dependencies**: Lightweight library with no external dependencies
-- **Type-Safe**: Includes TypeScript definitions for type safety
-- **Well-Tested**: Comprehensive test suite with cross-validation against the R package
-
----
-
-## Features
-
-✅ **Complete Gail Model Implementation**
-- Relative risk calculation with race-specific beta coefficients
-- Absolute risk calculation using numerical integration
-- Competing hazards (non-breast cancer mortality) modeling
-
-✅ **Multi-Ethnic Risk Models**
-- Non-Hispanic White (Gail Model)
-- African-American (CARE Study Model)
-- Hispanic (US-born and Foreign-born) (SFBCS Model)
-- Asian/Pacific Islander populations (AABCS Model)
-- Native American/Other
-
-✅ **Comprehensive Validation**
-- Pre-flight structural validation
-- Domain-specific validation with race-specific recoding
-- Consistency checks (e.g., biopsy/hyperplasia relationship)
-- User-friendly error messages
-
-✅ **Flexible Usage**
-- Single individual calculations
-- Batch processing for multiple individuals
-- Optional average risk comparison
-- Raw input or pre-recoded data support
-
-✅ **Modern JavaScript**
-- ES6+ modules
-- Works in browsers and Node.js
-- Available via NPM and CDN
-- TypeScript definitions included
+- **Accessible**: Web applications run on any device with an internet connection—requiring no setup or installation.
+- **Privacy-Preserving**: All calculations run entirely in the browser, ensuring no data is ever sent to external servers.
+- **Scalable**: Client-side processing automatically scales to high traffic demands, easily handling [viral surges in information-seeking behavior]((https://www.moffitt.org/endeavor/archive/actress-olivia-munn-brings-awareness-to-breast-cancer-risk-assessment-tool/)) (such as the [Angelina Jolie effect](https://pmc.ncbi.nlm.nih.gov/articles/PMC4408206/)).
 
 ---
 
@@ -104,7 +66,7 @@ pnpm add bcra
 
 Multiple CDN options are available for quick integration without a build step:
 
-#### jsDelivr (Recommended)
+#### jsDelivr
 
 **ES Module (Modern Browsers):**
 ```html
@@ -172,11 +134,11 @@ Multiple CDN options are available for quick integration without a build step:
 ```javascript
 import { calculateRisk, RaceCode } from 'bcra';
 
-// Define risk factor data for an individual
+// Define risk factors of the individual
 const data = {
   id: 1,
-  initialAge: 40,              // Current age: 40 years
-  projectionEndAge: 50,         // Calculate risk up to age 50
+  initialAge: 40,               // Current age: 40 years
+  projectionEndAge: 45,         // Calculate risk up to age 45 (5-year risk)
   race: RaceCode.WHITE,         // Non-Hispanic White
   numBreastBiopsies: 1,         // 1 previous biopsy
   ageAtMenarche: 12,            // First period at age 12
@@ -186,12 +148,12 @@ const data = {
 };
 
 // Calculate risk
-const result = calculateRisk(data);
+const result = calculateRisk(data, { calculateAverage: true });
 
 if (result.success) {
   console.log(`Absolute Risk: ${result.absoluteRisk.toFixed(2)}%`);
+  console.log(`Average Risk: ${result.averageRisk.toFixed(2)}%`);
   console.log(`Relative Risk (age <50): ${result.relativeRiskUnder50.toFixed(2)}`);
-  console.log(`Relative Risk (age ≥50): ${result.relativeRiskAtOrAbove50.toFixed(2)}`);
 } else {
   console.error('Validation errors:', result.validation.errors);
 }
@@ -199,12 +161,12 @@ if (result.success) {
 
 **Output:**
 ```
-Absolute Risk: 4.20%
+Absolute Risk: 1.73%
+Average Risk: 0.58%
 Relative Risk (age <50): 4.78
-Relative Risk (age ≥50): 3.58
 ```
 
-This means the individual has a **4.20% absolute risk** of developing invasive breast cancer between ages 40 and 50.
+The result suggests that the queried woman has a **1.73% absolute risk** of developing invasive breast cancer between the ages 40 and 45. The average risk of individuals of the same age and race/ethnicity in the general US population is 0.58%. This indicates that the queried woman is in an increased risk of developing invasive breast cancer compared to the average for a woman her age and race/ethnicity in the general US population.
 
 ---
 
@@ -359,14 +321,14 @@ const data = {
 The **absolute risk** is the probability (expressed as a percentage from 0-100) that the individual will develop invasive breast cancer during the projection interval.
 
 **Example Interpretation:**
-- `absoluteRisk: 2.5` means a **2.5% chance** of developing breast cancer from `initialAge` to `projectionEndAge`
-- For a 5-year projection (age 40 to 45), an absolute risk of 1.2% means approximately 12 out of 1,000 women with similar characteristics would develop breast cancer
+- `absoluteRisk: 1.73` means a **1.73% chance** of developing breast cancer from `initialAge` to `projectionEndAge`
+- For a 5-year projection (age 40 to 45), an absolute risk of 1.73% means approximately 17 out of 1,000 women with similar characteristics in the US population would develop invasive breast cancer
 
 #### Relative Risk
 
 **Relative risk** values indicate how much higher (or lower) the individual's risk is compared to a woman with "average" risk factors:
 
-- `relativeRiskUnder50: 1.5` means **1.5× higher risk** than average for ages < 50
+- `relativeRiskUnder50: 4.78` means **4.78× higher risk** than average for ages < 50
 - `relativeRiskAtOrAbove50: 0.8` means **0.8× (20% lower)** risk than average for ages ≥ 50
 
 #### Pattern Number
@@ -496,9 +458,9 @@ console.log(`Average Risk: ${result.averageRisk.toFixed(2)}%`);
 console.log(`Risk Ratio: ${(result.absoluteRisk / result.averageRisk).toFixed(2)}×`);
 
 // Output:
-// Individual's Risk: 5.67%
-// Average Risk: 3.12%
-// Risk Ratio: 1.82×
+// Individual's Risk: 21.60%
+// Average Risk: 2.73%
+// Risk Ratio: 7.92×
 ```
 
 ### Example 5: Different Race Groups
@@ -533,10 +495,10 @@ races.forEach((race) => {
 });
 
 // Output:
-// Non-Hispanic White: 1.23%
-// African-American: 1.15%
-// Hispanic (US Born): 0.98%
-// Chinese-American: 0.87%
+// Non-Hispanic White: 1.73%
+// African-American: 1.01%
+// Hispanic (US Born): 0.69%
+// Chinese-American: 1.44%
 ```
 
 ### Example 6: Handling Unknown Values
@@ -762,12 +724,15 @@ Where:
 
 3. **African-American Model:**
    - Gail MH, Costantino JP, Pee D, et al. *Projecting individualized absolute invasive breast cancer risk in African American women.* J Natl Cancer Inst. 2007;99(23):1782-1792.
+   - [PubMed: 18042936](https://pubmed.ncbi.nlm.nih.gov/18042936/)
 
 4. **Asian/Pacific Islander Model:**
    - Matsuno RK, Costantino JP, Ziegler RG, et al. *Projecting individualized absolute invasive breast cancer risk in Asian and Pacific Islander American women.* J Natl Cancer Inst. 2011;103(12):951-961.
+   - [PubMed: 21562243](https://pubmed.ncbi.nlm.nih.gov/21562243/)
 
 5. **Hispanic Model:**
    - Banegas MP, John EM, Slattery ML, et al. *Projecting individualized absolute invasive breast cancer risk in US Hispanic women.* J Natl Cancer Inst. 2017;109(2):djw215.
+   - [PubMed: 28003316](https://pubmed.ncbi.nlm.nih.gov/28003316/)
 
 ### Model Limitations
 
@@ -935,8 +900,8 @@ This section describes how to publish new versions of the BCRA package to NPM.
 
    After successful publication:
    - **NPM**: https://www.npmjs.com/package/bcra
-   - **jsDelivr**: https://cdn.jsdelivr.net/npm/bcra@X.Y.Z/
-   - **unpkg**: https://unpkg.com/bcra@X.Y.Z/
+   - **jsDelivr**: https://cdn.jsdelivr.net/npm/bcra@1.0.0/
+   - **unpkg**: https://app.unpkg.com/bcra@1.0.0
    - **GitHub Releases**: https://github.com/epiverse/bcra-js/releases
 
 ### Local Testing Before Publishing
