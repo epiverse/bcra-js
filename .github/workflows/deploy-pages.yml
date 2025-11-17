@@ -1,0 +1,174 @@
+name: Deploy BCRA Tool to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/bcra-tool/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Create deployment directory
+        run: |
+          mkdir -p deploy/tool
+          cp -r apps/bcra-tool/* deploy/tool/
+
+      - name: Create index redirect
+        run: |
+          cat > deploy/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="refresh" content="0; url=./tool/">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>BCRA - Breast Cancer Risk Assessment</title>
+            <style>
+              body {
+                font-family: system-ui, -apple-system, sans-serif;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                margin: 0;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                text-align: center;
+              }
+              .container {
+                max-width: 600px;
+                padding: 2rem;
+              }
+              h1 {
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+              }
+              p {
+                font-size: 1.25rem;
+                margin-bottom: 2rem;
+              }
+              a {
+                display: inline-block;
+                padding: 1rem 2rem;
+                background: white;
+                color: #667eea;
+                text-decoration: none;
+                border-radius: 0.5rem;
+                font-weight: 600;
+                transition: transform 0.2s;
+              }
+              a:hover {
+                transform: translateY(-2px);
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>Breast Cancer Risk Assessment Tool</h1>
+              <p>Redirecting to the calculator...</p>
+              <a href="./tool/">Click here if you are not redirected</a>
+            </div>
+          </body>
+          </html>
+          EOF
+
+      - name: Create 404 page
+        run: |
+          cat > deploy/404.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Page Not Found - BCRA</title>
+            <style>
+              body {
+                font-family: system-ui, -apple-system, sans-serif;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                margin: 0;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                text-align: center;
+              }
+              .container {
+                max-width: 600px;
+                padding: 2rem;
+              }
+              h1 {
+                font-size: 4rem;
+                margin-bottom: 1rem;
+              }
+              h2 {
+                font-size: 2rem;
+                margin-bottom: 1rem;
+              }
+              p {
+                font-size: 1.25rem;
+                margin-bottom: 2rem;
+              }
+              a {
+                display: inline-block;
+                padding: 1rem 2rem;
+                background: white;
+                color: #667eea;
+                text-decoration: none;
+                border-radius: 0.5rem;
+                font-weight: 600;
+                transition: transform 0.2s;
+              }
+              a:hover {
+                transform: translateY(-2px);
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>404</h1>
+              <h2>Page Not Found</h2>
+              <p>The page you're looking for doesn't exist.</p>
+              <a href="./tool/">Go to BCRA Calculator</a>
+            </div>
+          </body>
+          </html>
+          EOF
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./deploy
+          publish_branch: gh-pages
+          force_orphan: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Deploy BCRA Tool to GitHub Pages'
+
+      - name: Output deployment URL
+        run: |
+          echo "✅ Deployment successful!"
+          echo "🌐 App URL: https://epiverse.github.io/bcra-js/tool/"
+          echo "📦 Repository: https://github.com/epiverse/bcra-js"
