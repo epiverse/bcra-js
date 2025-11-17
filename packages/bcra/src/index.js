@@ -22,7 +22,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * @module bcra
- * @version 1.0.0
+ * @version 1.0.1
  * @license GPL-3.0-or-later
  */
 
@@ -43,7 +43,7 @@ export * from './types/index.js';
 export * as constants from './constants/index.js';
 
 // Export version
-export const VERSION = '1.0.0';
+export const VERSION = '1.0.1';
 
 // Import main functions for default export
 import { calculateRisk, calculateBatchRisk } from './core/risk-calculator.js';

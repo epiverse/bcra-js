@@ -1,6 +1,6 @@
 {
   "name": "bcra",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "JavaScript implementation of NCI's Breast Cancer Risk Assessment Tool (BCRAT; Gail Model)",
   "type": "module",
   "main": "./dist/bcra.umd.js",

@@ -514,7 +514,7 @@ The R BCRA package reference implementation is licensed under GPL (≥ 2).
 ---
 
 **Last Updated**: November 2025
-**Test Suite Version**: 1.0.0
+**Test Suite Version**: 1.0.1
 **R BCRA Version**: 2.1.2
 **Total Tests**: 550+
 **Cross-Validation Coverage**: 100%

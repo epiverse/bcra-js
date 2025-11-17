@@ -91,9 +91,9 @@ Multiple CDN options are available for quick integration without a build step:
 
 **Specific Version (Recommended for Production):**
 ```html
-<!-- Replace 1.0.0 with specific version -->
+<!-- Replace 1.0.1 with specific version -->
 <script type="module">
-  import { calculateRisk } from 'https://cdn.jsdelivr.net/npm/bcra@1.0.0/dist/bcra.es.js';
+  import { calculateRisk } from 'https://cdn.jsdelivr.net/npm/bcra@1.0.1/dist/bcra.es.js';
 </script>
 ```
 
@@ -120,7 +120,7 @@ Multiple CDN options are available for quick integration without a build step:
 **Version Pinning:**
 - Use `@latest` for the latest version (not recommended for production)
 - Use `@1` for the latest v1.x.x version (recommended)
-- Use `@1.0.0` for a specific version (most stable)
+- Use `@1.0.1` for a specific version (most stable)
 
 ### Browser Requirements
 
@@ -900,8 +900,8 @@ This section describes how to publish new versions of the BCRA package to NPM.
 
    After successful publication:
    - **NPM**: https://www.npmjs.com/package/bcra
-   - **jsDelivr**: https://cdn.jsdelivr.net/npm/bcra@1.0.0/
-   - **unpkg**: https://app.unpkg.com/bcra@1.0.0
+   - **jsDelivr**: https://cdn.jsdelivr.net/npm/bcra@1.0.1/
+   - **unpkg**: https://app.unpkg.com/bcra@1.0.1
    - **GitHub Releases**: https://github.com/epiverse/bcra-js/releases
 
 ### Local Testing Before Publishing
